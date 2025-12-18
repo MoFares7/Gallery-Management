@@ -1,8 +1,12 @@
 "use client";
 import { material } from "@/lib/material";
+import { materialIcons } from "@/lib/material-icons";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
+import { useState } from "react";
+import { useMediaQuery } from "@mui/material";
+import { theme } from "@/theme";
 
 interface NavbarProps {
   onCategoriesClick?: () => void;
@@ -11,7 +15,8 @@ interface NavbarProps {
 
 export default function Navbar({}: NavbarProps) {
   const router = useRouter();
-
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const isMobile = useMediaQuery(theme.breakpoints.down("lg"));
   const tabsList = [
     {
       label: "Gallery",
@@ -27,9 +32,76 @@ export default function Navbar({}: NavbarProps) {
     },
   ];
 
+  const handleDrawerToggle = () => {
+    setMobileOpen(!mobileOpen);
+  };
+
+  const handleNavigation = (href: string) => {
+    router.push(href);
+    setMobileOpen(false);
+  };
+
+  const drawer = (
+    <material.Box onClick={handleDrawerToggle} sx={{ textAlign: "center" }}>
+      <material.Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          p: 2,
+        }}
+      >
+        <Link href="/" style={{ display: "flex", alignItems: "center" }}>
+          <material.Box
+            sx={{
+              width: 128,
+              height: 32,
+              position: "relative",
+            }}
+          >
+            <Image
+              src="/icons/logo.svg"
+              alt="logo-image"
+              fill
+              style={{ objectFit: "contain" }}
+            />
+          </material.Box>
+        </Link>
+        <material.IconButton onClick={handleDrawerToggle}>
+          <materialIcons.close />
+        </material.IconButton>
+      </material.Box>
+      <material.Divider />
+      <material.List>
+        {tabsList.map((tab) => (
+          <material.ListItem key={tab.label} disablePadding>
+            <material.ListItemButton
+              onClick={() => handleNavigation(tab.href)}
+              sx={{
+                textAlign: "center",
+                py: 2,
+                "&:hover": {
+                  backgroundColor: "action.hover",
+                },
+              }}
+            >
+              <material.ListItemText
+                primary={tab.label}
+                primaryTypographyProps={{
+                  variant: "body1",
+                  color: "text.primary",
+                }}
+              />
+            </material.ListItemButton>
+          </material.ListItem>
+        ))}
+      </material.List>
+    </material.Box>
+  );
+
   return (
     <material.AppBar
-      position="fixed"
+      position={isMobile ? "static" : "fixed"}
       sx={{
         zIndex: 1300,
         top: 0,
@@ -46,7 +118,7 @@ export default function Navbar({}: NavbarProps) {
           justifyContent: "space-between",
         }}
       >
-        <Link href="/home" style={{ display: "flex", alignItems: "center" }}>
+        <Link href="/" style={{ display: "flex", alignItems: "center" }}>
           <material.Box
             sx={{
               width: { xs: 128, md: 320, lg: 400 },
@@ -86,8 +158,34 @@ export default function Navbar({}: NavbarProps) {
               {tab.label}
             </material.Typography>
           ))}
+          <material.IconButton
+            color="inherit"
+            aria-label="open drawer"
+            edge="start"
+            onClick={handleDrawerToggle}
+            sx={{ display: { md: "none" } }}
+          >
+            <materialIcons.menu />
+          </material.IconButton>
         </material.Box>
       </material.Toolbar>
+      <material.Drawer
+        variant="temporary"
+        open={mobileOpen}
+        onClose={handleDrawerToggle}
+        ModalProps={{
+          keepMounted: true, // Better open performance on mobile.
+        }}
+        sx={{
+          display: { xs: "block", md: "none" },
+          "& .MuiDrawer-paper": {
+            boxSizing: "border-box",
+            width: 280,
+          },
+        }}
+      >
+        {drawer}
+      </material.Drawer>
     </material.AppBar>
   );
 }

@@ -2,6 +2,7 @@ import {
   useCreateImage,
   useDeleteImage,
   useGetImages,
+  useUpdateImage,
 } from "@/services/image.service";
 import { Image, ImageFilters } from "@/types/image";
 import { useRouter } from "next/navigation";
@@ -23,6 +24,7 @@ export const useGalleryHome = () => {
   const router = useRouter();
   const { data: images, isLoading, error } = useGetImages();
   const createMutation = useCreateImage();
+  const updateMutation = useUpdateImage();
   const deleteMutation = useDeleteImage();
 
   const [uploadOpen, setUploadOpen] = useState(false);
@@ -133,6 +135,11 @@ export const useGalleryHome = () => {
     router.push(`/gallery/${image.id}`);
   };
 
+  const handleEdit = (image: Image) => {
+    setSelectedImage(image);
+    setUploadOpen(true);
+  };
+
   const handleConfirmDelete = () => {
     if (selectedImage) {
       deleteMutation.mutate(selectedImage.id, {
@@ -145,11 +152,30 @@ export const useGalleryHome = () => {
   };
 
   const handleUploadSubmit = (data: CreateImageData) => {
-    createMutation.mutate(data, {
-      onSuccess: () => {
-        setUploadOpen(false);
-      },
-    });
+    if (selectedImage) {
+      updateMutation.mutate(
+        {
+          id: selectedImage.id,
+          data: {
+            name: data.name,
+            categoryId: data.categoryId,
+            metadata: data.metadata,
+          },
+        },
+        {
+          onSuccess: () => {
+            setUploadOpen(false);
+            setSelectedImage(undefined);
+          },
+        }
+      );
+    } else {
+      createMutation.mutate(data, {
+        onSuccess: () => {
+          setUploadOpen(false);
+        },
+      });
+    }
   };
 
   return {
@@ -166,9 +192,11 @@ export const useGalleryHome = () => {
     error,
     handleDelete,
     handleView,
+    handleEdit,
     handleConfirmDelete,
     handleUploadSubmit,
     createMutation,
+    updateMutation,
     deleteMutation,
   };
 };

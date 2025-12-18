@@ -37,7 +37,7 @@ export default function HomeCategories() {
         background: "background.gradient",
       }}
     >
-      <material.Container maxWidth="xl" sx={{ pt: 16, pb: 8 }}>
+      <material.Container maxWidth="xl" sx={{ pt: { xs: 4, md: 8, lg: 16 } }}>
         <PageHeader
           title="Categories"
           buttonText="Create Category"

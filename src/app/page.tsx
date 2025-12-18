@@ -16,7 +16,12 @@ export default function HomePage() {
     >
       <material.Container
         maxWidth="xl"
-        sx={{ display: "flex", flexDirection: "column", gap: 4, pt: 16, pb: 8 }}
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          gap: 4,
+          pt: { xs: 4, md: 8, lg: 16 },
+        }}
       >
         <Hero />
         <CategoriesSection />

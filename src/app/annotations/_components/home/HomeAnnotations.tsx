@@ -94,7 +94,7 @@ export default function HomeAnnotations() {
         background: "background.gradient",
       }}
     >
-      <material.Container maxWidth="xl" sx={{ pt: 16, pb: 8 }}>
+      <material.Container maxWidth="xl" sx={{ pt: { xs: 4, md: 8, lg: 16 } }}>
         <PageHeader
           title="Annotations"
           buttonText="Create Annotation"
