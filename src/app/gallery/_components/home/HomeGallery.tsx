@@ -14,6 +14,7 @@ import {
 } from "@mui/material";
 import { useGalleryHome } from "../../_hooks/useGalleryHome";
 import GalleryFilters from "../filter/GalleryFilters";
+import PageHeader from "@/components/header/PageHeader";
 
 export default function HomeGallery() {
   const {
@@ -40,38 +41,12 @@ export default function HomeGallery() {
     <Box
       sx={{
         minHeight: "100vh",
-        backgroundColor: "#fafafa",
-        background: "linear-gradient(to bottom, #ffffff 0%, #f5f7fa 100%)",
+        backgroundColor: "background.default",
+        background: "background.gradient",
       }}
     >
       <Container maxWidth="xl" sx={{ pt: 16, pb: 8 }}>
-        <Box
-          sx={{
-            mb: 4,
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            flexWrap: "wrap",
-            gap: 2,
-          }}
-        >
-          <Typography variant="h3" component="h1" sx={{ fontWeight: 700 }}>
-            Image Gallery
-          </Typography>
-          <Button
-            variant="contained"
-            startIcon={<AddIcon />}
-            onClick={() => setUploadOpen(true)}
-            sx={{
-              borderRadius: 2,
-              textTransform: "none",
-              boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
-            }}
-          >
-            Upload Image
-          </Button>
-        </Box>
-
+        <PageHeader title="Image Gallery" buttonText="Upload Image" onClick={() => setUploadOpen(true)} />
         <GalleryFilters filters={filters} onFiltersChange={setFilters} />
 
         {isLoading ? (

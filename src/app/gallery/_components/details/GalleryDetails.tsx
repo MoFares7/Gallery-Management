@@ -1,3 +1,4 @@
+"use client";
 import { useGalleryDetails } from "@/app/gallery/_hooks/useGalleryDetails";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import {
@@ -40,7 +41,7 @@ export default function GalleryDetails() {
       <Box
         sx={{
           minHeight: "100vh",
-          backgroundColor: "#fafafa",
+          backgroundColor: "background.default",
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
@@ -56,7 +57,7 @@ export default function GalleryDetails() {
       <Box
         sx={{
           minHeight: "100vh",
-          backgroundColor: "#fafafa",
+          backgroundColor: "background.default",
         }}
       >
         <Container maxWidth="xl" sx={{ pt: 16, pb: 8 }}>
@@ -72,8 +73,8 @@ export default function GalleryDetails() {
     <Box
       sx={{
         minHeight: "100vh",
-        backgroundColor: "#fafafa",
-        background: "linear-gradient(to bottom, #ffffff 0%, #f5f7fa 100%)",
+        backgroundColor: "background.default",
+        background: "background.gradient",
       }}
     >
       <Container maxWidth="lg" sx={{ pt: 16, pb: 8 }}>
@@ -90,7 +91,7 @@ export default function GalleryDetails() {
           sx={{
             p: 4,
             borderRadius: 3,
-            backgroundColor: "white",
+            backgroundColor: "background.paper",
           }}
         >
           <Box sx={{ mb: 4 }}>
@@ -105,8 +106,8 @@ export default function GalleryDetails() {
               <Chip
                 label={image.category.name}
                 sx={{
-                  bgcolor: "#e3f2fd",
-                  color: "#1976d2",
+                  bgcolor: (theme) => theme.palette.primary.light + "20",
+                  color: "primary.main",
                   fontWeight: 500,
                   fontSize: "0.9rem",
                   height: 32,
@@ -141,7 +142,7 @@ export default function GalleryDetails() {
               sx={{
                 p: 3,
                 mb: 4,
-                backgroundColor: "#f8f9fa",
+                backgroundColor: "background.light",
                 borderRadius: 2,
               }}
             >
@@ -206,7 +207,7 @@ export default function GalleryDetails() {
                 mt: 3,
                 p: 3,
                 borderRadius: 2,
-                backgroundColor: "#f8f9fa",
+                backgroundColor: "background.light",
               }}
             >
               <ImageAnnotation image={image} />

@@ -19,9 +19,10 @@ export default function PrimaryCard({
       sx={{
         p: 4,
         borderRadius: 3,
-        backgroundColor: "white",
-        boxShadow: "0 4px 20px rgba(0,0,0,0.08)",
-        border: "1px solid rgb(230, 230, 233)",
+        backgroundColor: "background.paper",
+        boxShadow: 2,
+        border: "1px solid",
+        borderColor: "divider",
         scrollMarginTop: "80px",
       }}
     >
@@ -36,7 +37,7 @@ export default function PrimaryCard({
         <Typography
           variant="h4"
           component="h2"
-          sx={{ fontWeight: 600, color: "#333" }}
+          sx={{ fontWeight: 600, color: "text.primary" }}
         >
           {title}
         </Typography>
@@ -47,8 +48,12 @@ export default function PrimaryCard({
           sx={{
             textTransform: "none",
             borderRadius: 2,
-            color: "#667eea",
-            borderColor: "#667eea",
+            color: "error.main",
+            borderColor: "error.main",
+            "&:hover": {
+              borderColor: "error.dark",
+              backgroundColor: (theme) => theme.palette.error.main + "10",
+            },
           }}
         >
           View All

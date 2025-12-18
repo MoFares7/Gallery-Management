@@ -11,7 +11,7 @@ export interface Image {
     size?: number;
     width?: number;
     height?: number;
-    format?: string;
+    resolution?: string;
   };
   createdAt?: string;
   updatedAt?: string;

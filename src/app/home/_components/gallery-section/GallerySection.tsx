@@ -22,9 +22,9 @@ export default function GallerySection() {
             <CircularProgress />
           </Box>
         ) : (
-          <Grid container spacing={3}>
+          <Grid container spacing={2} sx={{ justifyContent: "center" }}>
             {displayedImages && displayedImages.length > 0 ? (
-              displayedImages.map((image) => (
+              displayedImages?.map((image) => (
                 // @ts-expect-error MUI v7 Grid types don't include item prop but it works at runtime
                 <Grid item xs={12} sm={6} md={4} lg={3} key={image.id}>
                   <GalleryCard

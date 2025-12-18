@@ -10,8 +10,8 @@ export default function HomePage() {
     <Box
       sx={{
         minHeight: "100vh",
-        backgroundColor: "#fafafa",
-        background: "linear-gradient(to bottom, #ffffff 0%, #f5f7fa 100%)",
+        backgroundColor: "background.default",
+        background: "background.gradient",
       }}
     >
       <Container

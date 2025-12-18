@@ -18,6 +18,7 @@ import {
 } from "@mui/material";
 import { useCategoriesHome } from "../../_hooks/useCategoriesHome";
 import AddEditCategory from "../add-edit/AddEditCategory";
+import PageHeader from "@/components/header/PageHeader";
 
 export default function HomeCategories() {
   const {
@@ -47,37 +48,16 @@ export default function HomeCategories() {
     <Box
       sx={{
         minHeight: "100vh",
-        backgroundColor: "#fafafa",
-        background: "linear-gradient(to bottom, #ffffff 0%, #f5f7fa 100%)",
+        backgroundColor: "background.default",
+        background: "background.gradient",
       }}
     >
       <Container maxWidth="xl" sx={{ pt: 16, pb: 8 }}>
-        <Box
-          sx={{
-            mb: 4,
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            flexWrap: "wrap",
-            gap: 2,
-          }}
-        >
-          <Typography variant="h3" component="h1" sx={{ fontWeight: 700 }}>
-            Categories
-          </Typography>
-          <Button
-            variant="contained"
-            startIcon={<AddIcon />}
-            onClick={handleCreate}
-            sx={{
-              borderRadius: 2,
-              textTransform: "none",
-              boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
-            }}
-          >
-            Create Category
-          </Button>
-        </Box>
+        <PageHeader
+          title="Categories"
+          buttonText="Create Category"
+          onClick={handleCreate}
+        />
 
         {isLoading ? (
           <Box display="flex" justifyContent="center" p={4}>

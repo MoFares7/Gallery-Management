@@ -1,21 +1,10 @@
 "use client";
 
-import { ThemeProvider, createTheme, CssBaseline } from "@mui/material";
+import { ThemeProvider, CssBaseline } from "@mui/material";
 import { QueryClientProvider } from "./QueryClientProvider";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
-const theme = createTheme({
-  palette: {
-    mode: "light",
-    primary: {
-      main: "#1976d2",
-    },
-    secondary: {
-      main: "#dc004e",
-    },
-  },
-});
+import { theme } from "@/theme";
 
 export function AppProviders({ children }: { children: React.ReactNode }) {
   return (

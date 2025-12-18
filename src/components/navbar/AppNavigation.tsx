@@ -2,6 +2,7 @@
 import { AppBar, Toolbar, Typography, Box, Avatar } from "@mui/material";
 import ImageIcon from "@mui/icons-material/Image";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 interface AppNavigationProps {
   onCategoriesClick?: () => void;
@@ -25,42 +26,58 @@ export default function AppNavigation({}: AppNavigationProps) {
       sx={{
         zIndex: 1300,
         top: 0,
-        backgroundColor: "white",
-        color: "#333",
-        boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+        backgroundColor: "background.paper",
+        color: "text.primary",
+        boxShadow: 1,
       }}
     >
-      <Toolbar sx={{ maxWidth: "xl", mx: "auto", width: "100%" }}>
-        <Avatar
+      <Toolbar
+        sx={{
+          maxWidth: "xl",
+          mx: "auto",
+          width: "100%",
+          justifyContent: "space-between",
+        }}
+      >
+        <Link href="/home" style={{ display: "flex", alignItems: "center" }}>
+          <Avatar
+            sx={{
+              bgcolor: "primary.main",
+              mr: 2,
+              width: 32,
+              height: 32,
+            }}
+          >
+            <ImageIcon fontSize="small" />
+          </Avatar>
+          <Typography
+            variant="h6"
+            component="div"
+            sx={{
+              flexGrow: 1,
+              fontWeight: 600,
+              fontSize: "1.25rem",
+              color: "text.primary",
+            }}
+          >
+            Averroes
+          </Typography>
+        </Link>
+        <Box
           sx={{
-            bgcolor: "#1976d2",
-            mr: 2,
-            width: 32,
-            height: 32,
+            display: "flex",
+            gap: 3,
+            alignItems: "center",
+            justifyContent: "end",
           }}
         >
-          <ImageIcon fontSize="small" />
-        </Avatar>
-        <Typography
-          variant="h6"
-          component="div"
-          sx={{
-            flexGrow: 1,
-            fontWeight: 600,
-            fontSize: "1.25rem",
-            color: "#333",
-          }}
-        >
-          Averroes
-        </Typography>
-        <Box sx={{ display: "flex", gap: 3, alignItems: "center" }}>
           <Typography
             variant="body2"
             onClick={handleGalleryClick}
             sx={{
-              color: "#666",
+              color: "text.secondary",
               cursor: "pointer",
-              "&:hover": { color: "#1976d2" },
+              "&:hover": { color: "primary.main" },
               display: { xs: "none", md: "block" },
               transition: "color 0.2s ease",
             }}
@@ -71,9 +88,9 @@ export default function AppNavigation({}: AppNavigationProps) {
             variant="body2"
             onClick={handleCategoriesClick}
             sx={{
-              color: "#666",
+              color: "text.secondary",
               cursor: "pointer",
-              "&:hover": { color: "#1976d2" },
+              "&:hover": { color: "primary.main" },
               display: { xs: "none", md: "block" },
               transition: "color 0.2s ease",
             }}

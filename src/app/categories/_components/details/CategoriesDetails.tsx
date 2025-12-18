@@ -24,7 +24,7 @@ export default function CategoriesDetails() {
       <Box
         sx={{
           minHeight: "100vh",
-          backgroundColor: "#fafafa",
+          backgroundColor: "background.default",
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
@@ -40,7 +40,7 @@ export default function CategoriesDetails() {
       <Box
         sx={{
           minHeight: "100vh",
-          backgroundColor: "#fafafa",
+          backgroundColor: "background.default",
         }}
       >
         <Container maxWidth="xl" sx={{ pt: 16, pb: 8 }}>
@@ -56,8 +56,8 @@ export default function CategoriesDetails() {
     <Box
       sx={{
         minHeight: "100vh",
-        backgroundColor: "#fafafa",
-        background: "linear-gradient(to bottom, #ffffff 0%, #f5f7fa 100%)",
+        backgroundColor: "background.default",
+        background: "background.gradient",
       }}
     >
       <Container maxWidth="lg" sx={{ pt: 16, pb: 8 }}>
@@ -74,7 +74,7 @@ export default function CategoriesDetails() {
           sx={{
             p: 4,
             borderRadius: 3,
-            backgroundColor: "white",
+            backgroundColor: "background.paper",
             mb: 4,
           }}
         >
@@ -138,7 +138,7 @@ export default function CategoriesDetails() {
                   elevation={1}
                   sx={{
                     p: 2,
-                    backgroundColor: "#f8f9fa",
+                    backgroundColor: "background.light",
                     borderRadius: 2,
                   }}
                 >
@@ -179,7 +179,7 @@ export default function CategoriesDetails() {
             sx={{
               p: 4,
               textAlign: "center",
-              backgroundColor: "white",
+              backgroundColor: "background.paper",
               borderRadius: 3,
             }}
           >
