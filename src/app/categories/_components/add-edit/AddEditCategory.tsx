@@ -1,20 +1,14 @@
 "use client";
 
 import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  TextField,
-  Button,
-  Box,
-} from "@mui/material";
-import { useState, useEffect } from "react";
-import {
   Category,
   CreateCategoryDto,
   UpdateCategoryDto,
 } from "@/types/category";
+import { material } from "@/lib/material";
+import { Field, Form, Formik } from "formik";
+import { categoryValidationSchema } from "../../_validation";
+import FormikInputTextField from "@/components/inputs/formik-input/FormikInputTextField";
 
 interface CategoryFormProps {
   open: boolean;
@@ -24,6 +18,11 @@ interface CategoryFormProps {
   isLoading?: boolean;
 }
 
+interface FormValues {
+  name: string;
+  description: string;
+}
+
 export default function AddEditCategory({
   open,
   onClose,
@@ -31,63 +30,78 @@ export default function AddEditCategory({
   category,
   isLoading = false,
 }: CategoryFormProps) {
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
+  const initialValues: FormValues = {
+    name: category?.name ?? "",
+    description: category?.description ?? "",
+  };
 
-  useEffect(() => {
-    if (category) {
-      setName(category.name);
-      setDescription(category.description || "");
-    } else {
-      setName("");
-      setDescription("");
-    }
-  }, [category, open]);
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = (values: FormValues) => {
     onSubmit({
-      name,
-      description: description || undefined,
+      name: values.name,
+      description: values.description ?? undefined,
     });
   };
 
+  const handleClose = () => {
+    onClose();
+  };
+
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-      <form onSubmit={handleSubmit}>
-        <DialogTitle>
-          {category ? "Edit Category" : "Create New Category"}
-        </DialogTitle>
-        <DialogContent>
-          <Box sx={{ display: "flex", flexDirection: "column", gap: 2, pt: 1 }}>
-            <TextField
-              label="Category Name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              required
-              fullWidth
-              disabled={isLoading}
-            />
-            <TextField
-              label="Description"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              multiline
-              rows={3}
-              fullWidth
-              disabled={isLoading}
-            />
-          </Box>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={onClose} disabled={isLoading}>
-            Cancel
-          </Button>
-          <Button type="submit" variant="contained" disabled={isLoading}>
-            {category ? "Update" : "Create"}
-          </Button>
-        </DialogActions>
-      </form>
-    </Dialog>
+    <material.Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
+      <Formik
+        initialValues={initialValues}
+        validationSchema={categoryValidationSchema}
+        onSubmit={handleSubmit}
+        enableReinitialize
+      >
+        {({ isSubmitting, resetForm }) => (
+          <Form>
+            <material.DialogTitle>
+              {category ? "Edit Category" : "Create New Category"}
+            </material.DialogTitle>
+            <material.DialogContent>
+              <material.Box
+                sx={{ display: "flex", flexDirection: "column", gap: 2, pt: 1 }}
+              >
+                <Field
+                  component={FormikInputTextField}
+                  name="name"
+                  label="Category Name"
+                  fullWidth
+                  disabled={isLoading || isSubmitting}
+                />
+                <Field
+                  component={FormikInputTextField}
+                  name="description"
+                  label="Description"
+                  multiline
+                  rows={3}
+                  fullWidth
+                  disabled={isLoading || isSubmitting}
+                />
+              </material.Box>
+            </material.DialogContent>
+            <material.DialogActions>
+              <material.Button
+                onClick={() => {
+                  resetForm();
+                  handleClose();
+                }}
+                disabled={isLoading || isSubmitting}
+              >
+                Cancel
+              </material.Button>
+              <material.Button
+                type="submit"
+                variant="contained"
+                disabled={isLoading || isSubmitting}
+              >
+                {category ? "Update" : "Create"}
+              </material.Button>
+            </material.DialogActions>
+          </Form>
+        )}
+      </Formik>
+    </material.Dialog>
   );
 }

@@ -1,5 +1,5 @@
-import { Box, Button, Typography } from "@mui/material";
-import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import { material } from "@/lib/material";
+import { materialIcons } from "@/lib/material-icons";
 import { useRouter } from "next/navigation";
 
 interface PrimaryCardProps {
@@ -15,17 +15,18 @@ export default function PrimaryCard({
 }: PrimaryCardProps) {
   const router = useRouter();
   return (
-    <Box
+    <material.Box
       sx={{
         p: 4,
         borderRadius: 3,
-        backgroundColor: "white",
-        boxShadow: "0 4px 20px rgba(0,0,0,0.08)",
-        border: "1px solid rgb(230, 230, 233)",
+        backgroundColor: "background.paper",
+        boxShadow: 2,
+        border: "1px solid",
+        borderColor: "divider",
         scrollMarginTop: "80px",
       }}
     >
-      <Box
+      <material.Box
         sx={{
           display: "flex",
           justifyContent: "space-between",
@@ -33,28 +34,32 @@ export default function PrimaryCard({
           mb: 4,
         }}
       >
-        <Typography
+        <material.Typography
           variant="h4"
           component="h2"
-          sx={{ fontWeight: 600, color: "#333" }}
+          sx={{ fontWeight: 600, color: "text.primary" }}
         >
           {title}
-        </Typography>
-        <Button
+        </material.Typography>
+        <material.Button
           variant="outlined"
-          endIcon={<ArrowForwardIcon />}
+          endIcon={<materialIcons.arrowForward />}
           onClick={() => router.push(href)}
           sx={{
             textTransform: "none",
             borderRadius: 2,
-            color: "#667eea",
-            borderColor: "#667eea",
+            color: "error.main",
+            borderColor: "error.main",
+            "&:hover": {
+              borderColor: "error.dark",
+              backgroundColor: (theme) => theme.palette.error.main + "10",
+            },
           }}
         >
           View All
-        </Button>
-      </Box>
+        </material.Button>
+      </material.Box>
       {children}
-    </Box>
+    </material.Box>
   );
 }

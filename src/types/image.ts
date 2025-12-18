@@ -9,12 +9,9 @@ export interface Image {
   };
   metadata?: {
     size?: number;
-    width?: number;
-    height?: number;
-    format?: string;
+    resolution?: string;
   };
-  createdAt?: string;
-  updatedAt?: string;
+  uploadDate: string;
 }
 
 export interface CreateImageDto {
@@ -43,10 +40,8 @@ export interface UpdateImageDto {
 export interface ImageFilters {
   name?: string;
   categoryId?: number;
-  minSize?: number;
-  maxSize?: number;
-  minWidth?: number;
-  maxWidth?: number;
-  minHeight?: number;
-  maxHeight?: number;
+  metadata?: {
+    size?: string;
+    resolution?: string;
+  };
 }

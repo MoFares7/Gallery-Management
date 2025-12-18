@@ -5,7 +5,6 @@ import {
   createAnnotation,
   deleteAnnotation,
   getAllAnnotations,
-  getAnnotationsByImageId,
   updateAnnotation,
 } from "../endpoints/annotation";
 
@@ -15,14 +14,6 @@ export const useAnnotations = () => {
   return useQuery({
     queryKey: [ANNOTATIONS_QUERY_KEY],
     queryFn: () => getAllAnnotations({}),
-  });
-};
-
-export const useAnnotationsByImageId = (imageId: number) => {
-  return useQuery({
-    queryKey: [ANNOTATIONS_QUERY_KEY, "image", imageId],
-    queryFn: () => getAnnotationsByImageId(imageId, {}),
-    enabled: !!imageId,
   });
 };
 

@@ -1,18 +1,19 @@
-import { Box, Typography } from "@mui/material";
+import { material } from "@/lib/material";
 
 export default function Hero() {
   return (
-    <Box
+    <material.Box
       sx={{
         textAlign: "center",
-        background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+        background: (theme) =>
+          `linear-gradient(135deg, ${theme?.palette?.error?.main} 0%, ${theme?.palette?.error?.dark} 100%)`,
         borderRadius: 4,
         p: 6,
         color: "white",
-        boxShadow: "0 10px 40px rgba(0,0,0,0.1)",
+        boxShadow: 3,
       }}
     >
-      <Typography
+      <material.Typography
         variant="h2"
         component="h1"
         sx={{
@@ -22,49 +23,19 @@ export default function Hero() {
         }}
       >
         Daily hit of interactive design and showcase of{" "}
-        <Box component="span" sx={{ color: "#a8d8ff" }}>
+        <material.Box
+          component="span"
+          sx={{ color: (theme) => theme?.palette?.error?.light }}
+        >
           creativity
-        </Box>
-      </Typography>
-      <Typography variant="h6" sx={{ mb: 4, opacity: 0.9, fontWeight: 400 }}>
+        </material.Box>
+      </material.Typography>
+      <material.Typography
+        variant="h4"
+        sx={{ mb: 4, opacity: 0.9, fontWeight: 400 }}
+      >
         We proudly highlight one brilliant interactive project each day.
-      </Typography>
-      {/* <Box
-              sx={{
-                display: "flex",
-                gap: 2,
-                justifyContent: "center",
-                flexWrap: "wrap",
-              }}
-            >
-              <Button
-                variant="contained"
-                sx={{
-                  bgcolor: "rgba(0,0,0,0.2)",
-                  color: "white",
-                  px: 4,
-                  py: 1.5,
-                  "&:hover": { bgcolor: "rgba(0,0,0,0.3)" },
-                }}
-              >
-                View Today&apos;s Project
-              </Button>
-              <Button
-                variant="outlined"
-                sx={{
-                  borderColor: "white",
-                  color: "white",
-                  px: 4,
-                  py: 1.5,
-                  "&:hover": {
-                    borderColor: "white",
-                    bgcolor: "rgba(255,255,255,0.1)",
-                  },
-                }}
-              >
-                Get Daily Email
-              </Button>
-            </Box> */}
-    </Box>
+      </material.Typography>
+    </material.Box>
   );
 }

@@ -3,7 +3,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { AppProviders } from "@/providers/AppProviders";
 import { Suspense } from "react";
-import AppNavigation from "@/components/navbar/AppNavigation";
+import Navbar from "@/components/navbar/Navbar";
+import HandleStatusSection from "@/components/handles/HandleStateSection";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -18,6 +19,9 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Averroes",
   description: "Manage images, categories, and annotations",
+  icons: {
+    icon: "../../public/icons/logo.svg",
+  },
 };
 
 export default function RootLayout({
@@ -29,8 +33,8 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <AppProviders>
-          <Suspense fallback={<div>Loading...</div>}>
-            <AppNavigation />
+          <Suspense fallback={<HandleStatusSection type="loading" />}>
+            <Navbar />
             {children}
           </Suspense>
         </AppProviders>

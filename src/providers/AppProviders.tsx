@@ -1,27 +1,16 @@
 "use client";
 
-import { ThemeProvider, createTheme, CssBaseline } from "@mui/material";
+import { material } from "@/lib/material";
 import { QueryClientProvider } from "./QueryClientProvider";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
-const theme = createTheme({
-  palette: {
-    mode: "light",
-    primary: {
-      main: "#1976d2",
-    },
-    secondary: {
-      main: "#dc004e",
-    },
-  },
-});
+import { theme } from "@/theme";
 
 export function AppProviders({ children }: { children: React.ReactNode }) {
   return (
     <QueryClientProvider>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
+      <material.ThemeProvider theme={theme}>
+        <material.CssBaseline />
         {children}
         <ToastContainer
           position="top-right"
@@ -34,7 +23,7 @@ export function AppProviders({ children }: { children: React.ReactNode }) {
           draggable
           pauseOnHover
         />
-      </ThemeProvider>
+      </material.ThemeProvider>
     </QueryClientProvider>
   );
 }

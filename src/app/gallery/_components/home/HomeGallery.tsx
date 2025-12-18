@@ -1,21 +1,16 @@
 "use client";
-import GalleryCard from "@/components/cards/GalleryCard";
-import ImageUpload from "@/components/images/ImageUpload";
+import SecondaryCard from "@/components/cards/SecondaryCard";
+import PageHeader from "@/components/header/PageHeader";
+import AddEditImageGallary from "@/app/gallery/_components/add-edit/AddEditImageGallary";
 import DeleteConfirmationDialog from "@/components/modals/DeleteConfirmationDialog";
-import AddIcon from "@mui/icons-material/Add";
-import {
-  Alert,
-  Box,
-  Button,
-  CircularProgress,
-  Container,
-  Grid,
-  Typography,
-} from "@mui/material";
+import GalleryFilters from "@/app/gallery/_components/filter/GalleryFilters";
+import { material } from "@/lib/material";
+import { useState } from "react";
 import { useGalleryHome } from "../../_hooks/useGalleryHome";
-import GalleryFilters from "../filter/GalleryFilters";
+import HandleStatusSection from "@/components/handles/HandleStateSection";
 
 export default function HomeGallery() {
+  const [filtersOpen, setFiltersOpen] = useState(false);
   const {
     uploadOpen,
     setUploadOpen,
@@ -28,7 +23,7 @@ export default function HomeGallery() {
     filteredImages,
     isLoading,
     error,
-    // handleDelete,
+    handleDelete,
     handleView,
     handleConfirmDelete,
     handleUploadSubmit,
@@ -37,75 +32,51 @@ export default function HomeGallery() {
   } = useGalleryHome();
 
   return (
-    <Box
+    <material.Box
       sx={{
         minHeight: "100vh",
-        backgroundColor: "#fafafa",
-        background: "linear-gradient(to bottom, #ffffff 0%, #f5f7fa 100%)",
+        backgroundColor: "background.default",
+        background: "background.gradient",
       }}
     >
-      <Container maxWidth="xl" sx={{ pt: 16, pb: 8 }}>
-        <Box
-          sx={{
-            mb: 4,
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            flexWrap: "wrap",
-            gap: 2,
-          }}
-        >
-          <Typography variant="h3" component="h1" sx={{ fontWeight: 700 }}>
-            Image Gallery
-          </Typography>
-          <Button
-            variant="contained"
-            startIcon={<AddIcon />}
-            onClick={() => setUploadOpen(true)}
-            sx={{
-              borderRadius: 2,
-              textTransform: "none",
-              boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
-            }}
-          >
-            Upload Image
-          </Button>
-        </Box>
-
-        <GalleryFilters filters={filters} onFiltersChange={setFilters} />
+      <material.Container maxWidth="xl" sx={{ pt: 16, pb: 8 }}>
+        <PageHeader
+          title="Image Gallery"
+          buttonText="Upload Image"
+          onClick={() => setUploadOpen(true)}
+          isHasFilters={true}
+          onFiltersClick={() => setFiltersOpen(true)}
+        />
 
         {isLoading ? (
-          <Box display="flex" justifyContent="center" p={4}>
-            <CircularProgress />
-          </Box>
+          <HandleStatusSection type="loading" />
         ) : error ? (
-          <Alert severity="error" sx={{ m: 2 }}>
-            Failed to load images. Please try again.
-          </Alert>
+          <HandleStatusSection type="error" />
         ) : (
-          <Grid container spacing={3}>
+          <material.Grid container spacing={3}>
             {filteredImages && filteredImages.length > 0 ? (
               filteredImages.map((image) => (
-                <Grid item xs={12} sm={6} md={4} lg={3} key={image.id}>
-                  <GalleryCard
+                <material.Grid
+                  size={{ xs: 12, sm: 6, md: 4, lg: 3 }}
+                  key={image.id}
+                >
+                  <SecondaryCard
                     image={image}
                     onClick={() => handleView(image)}
+                    onClickDelete={() => handleDelete(image)}
+                    isAbleAction={true}
                   />
-                </Grid>
+                </material.Grid>
               ))
             ) : (
-              <Grid item xs={12}>
-                <Alert severity="info" sx={{ borderRadius: 2 }}>
-                  {filters && Object.keys(filters).length > 0
-                    ? "No images match the current filters."
-                    : "No images found. Upload one to get started."}
-                </Alert>
-              </Grid>
+              <material.Grid size={{ xs: 12 }}>
+                <HandleStatusSection type="empty" />
+              </material.Grid>
             )}
-          </Grid>
+          </material.Grid>
         )}
 
-        <ImageUpload
+        <AddEditImageGallary
           open={uploadOpen}
           onClose={() => setUploadOpen(false)}
           onSubmit={handleUploadSubmit}
@@ -123,7 +94,14 @@ export default function HomeGallery() {
           message={`Are you sure you want to delete "${selectedImage?.name}"? This action cannot be undone.`}
           isLoading={deleteMutation.isPending}
         />
-      </Container>
-    </Box>
+
+        <GalleryFilters
+          open={filtersOpen}
+          onClose={() => setFiltersOpen(false)}
+          filters={filters}
+          onFiltersChange={setFilters}
+        />
+      </material.Container>
+    </material.Box>
   );
 }

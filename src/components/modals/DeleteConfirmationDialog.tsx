@@ -1,15 +1,7 @@
 "use client";
 
-import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogContentText,
-  DialogActions,
-  Button,
-  CircularProgress,
-  Box,
-} from "@mui/material";
+import { material } from "@/lib/material";
+import PrimaryButton from "../buttons/PrimaryButton";
 
 interface DeleteConfirmationDialogProps {
   open: boolean;
@@ -29,29 +21,27 @@ export default function DeleteConfirmationDialog({
   isLoading = false,
 }: DeleteConfirmationDialogProps) {
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-      <DialogTitle>{title}</DialogTitle>
-      <DialogContent>
-        <DialogContentText>{message}</DialogContentText>
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={onClose} disabled={isLoading}>
-          Cancel
-        </Button>
-        <Button
-          onClick={onConfirm}
-          color="error"
-          variant="contained"
+    <material.Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
+      <material.DialogTitle>{title}</material.DialogTitle>
+      <material.DialogContent>
+        <material.DialogContentText>{message}</material.DialogContentText>
+      </material.DialogContent>
+      <material.DialogActions sx={{ px: 2, pb: 2 }}>
+        <PrimaryButton
+          variant="outlined"
+          onClick={onClose}
+          buttonText="Cancel"
           disabled={isLoading}
-          startIcon={
-            isLoading ? (
-              <CircularProgress size={16} color="inherit" />
-            ) : undefined
-          }
-        >
-          Delete
-        </Button>
-      </DialogActions>
-    </Dialog>
+          backgroundColor="white"
+          hoverBackgroundColor="background.default"
+        />
+        <PrimaryButton
+          onClick={onConfirm}
+          buttonText="Delete"
+          loading={isLoading}
+          disabled={isLoading}
+        />
+      </material.DialogActions>
+    </material.Dialog>
   );
 }

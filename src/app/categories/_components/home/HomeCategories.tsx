@@ -1,23 +1,11 @@
 "use client";
+import CategoryCard from "@/components/cards/CategoryCard";
+import PageHeader from "@/components/header/PageHeader";
 import DeleteConfirmationDialog from "@/components/modals/DeleteConfirmationDialog";
-import { getCategoryColor, getCategoryIcon } from "@/constants";
-import AddIcon from "@mui/icons-material/Add";
-import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
-import {
-  Alert,
-  Box,
-  Button,
-  CircularProgress,
-  Container,
-  Grid,
-  IconButton,
-  Paper,
-  Tooltip,
-  Typography,
-} from "@mui/material";
+import { material } from "@/lib/material";
 import { useCategoriesHome } from "../../_hooks/useCategoriesHome";
 import AddEditCategory from "../add-edit/AddEditCategory";
+import HandleStatusSection from "@/components/handles/HandleStateSection";
 
 export default function HomeCategories() {
   const {
@@ -30,8 +18,6 @@ export default function HomeCategories() {
     setDeleteDialogOpen,
     selectedCategory,
     setSelectedCategory,
-    hoveredId,
-    setHoveredId,
     handleCreate,
     handleEdit,
     handleDelete,
@@ -44,154 +30,47 @@ export default function HomeCategories() {
   } = useCategoriesHome();
 
   return (
-    <Box
+    <material.Box
       sx={{
         minHeight: "100vh",
-        backgroundColor: "#fafafa",
-        background: "linear-gradient(to bottom, #ffffff 0%, #f5f7fa 100%)",
+        backgroundColor: "background.default",
+        background: "background.gradient",
       }}
     >
-      <Container maxWidth="xl" sx={{ pt: 16, pb: 8 }}>
-        <Box
-          sx={{
-            mb: 4,
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            flexWrap: "wrap",
-            gap: 2,
-          }}
-        >
-          <Typography variant="h3" component="h1" sx={{ fontWeight: 700 }}>
-            Categories
-          </Typography>
-          <Button
-            variant="contained"
-            startIcon={<AddIcon />}
-            onClick={handleCreate}
-            sx={{
-              borderRadius: 2,
-              textTransform: "none",
-              boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
-            }}
-          >
-            Create Category
-          </Button>
-        </Box>
+      <material.Container maxWidth="xl" sx={{ pt: 16, pb: 8 }}>
+        <PageHeader
+          title="Categories"
+          buttonText="Create Category"
+          onClick={handleCreate}
+        />
 
         {isLoading ? (
-          <Box display="flex" justifyContent="center" p={4}>
-            <CircularProgress />
-          </Box>
+          <HandleStatusSection type="loading" />
         ) : error ? (
-          <Alert severity="error" sx={{ m: 2 }}>
-            Failed to load categories. Please try again.
-          </Alert>
+          <HandleStatusSection type="error" />
         ) : (
-          <Grid container spacing={3}>
+          <material.Grid container spacing={3}>
             {categories && categories.length > 0 ? (
               categories.map((category) => (
-                <Grid item xs={6} sm={4} md={3} lg={2.4} key={category.id}>
-                  <Tooltip title={category.description || category.name} arrow>
-                    <Paper
-                      elevation={hoveredId === category.id ? 8 : 2}
-                      sx={{
-                        p: 3,
-                        textAlign: "center",
-                        cursor: "pointer",
-                        transition: "all 0.3s ease",
-                        borderRadius: 3,
-                        backgroundColor: getCategoryColor(category.id),
-                        color: "white",
-                        position: "relative",
-                        minHeight: 140,
-                        display: "flex",
-                        flexDirection: "column",
-                        justifyContent: "center",
-                        "&:hover": {
-                          transform: "translateY(-4px)",
-                          boxShadow: "0 8px 24px rgba(0,0,0,0.2)",
-                        },
-                      }}
-                      onMouseEnter={() => setHoveredId(category.id)}
-                      onMouseLeave={() => setHoveredId(null)}
-                      onClick={() => handleView(category)}
-                    >
-                      <Box
-                        sx={{
-                          fontSize: "3rem",
-                          fontWeight: 700,
-                          mb: 1,
-                          textShadow: "0 2px 4px rgba(0,0,0,0.2)",
-                        }}
-                      >
-                        {getCategoryIcon(category.name)}
-                      </Box>
-                      <Typography
-                        variant="body1"
-                        sx={{
-                          fontWeight: 600,
-                          fontSize: "0.875rem",
-                          textTransform: "uppercase",
-                          letterSpacing: 0.5,
-                          opacity: 0.95,
-                        }}
-                        noWrap
-                      >
-                        {category.name}
-                      </Typography>
-                      {hoveredId === category.id && (
-                        <Box
-                          sx={{
-                            position: "absolute",
-                            top: 8,
-                            right: 8,
-                            display: "flex",
-                            gap: 0.5,
-                          }}
-                        >
-                          <IconButton
-                            size="small"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleEdit(category);
-                            }}
-                            sx={{
-                              bgcolor: "rgba(255,255,255,0.2)",
-                              color: "white",
-                              "&:hover": { bgcolor: "rgba(255,255,255,0.3)" },
-                            }}
-                          >
-                            <EditIcon fontSize="small" />
-                          </IconButton>
-                          <IconButton
-                            size="small"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleDelete(category);
-                            }}
-                            sx={{
-                              bgcolor: "rgba(255,255,255,0.2)",
-                              color: "white",
-                              "&:hover": { bgcolor: "rgba(255,255,255,0.3)" },
-                            }}
-                          >
-                            <DeleteIcon fontSize="small" />
-                          </IconButton>
-                        </Box>
-                      )}
-                    </Paper>
-                  </Tooltip>
-                </Grid>
+                <material.Grid
+                  size={{ xs: 6, sm: 4, md: 3, lg: 2.2, xl: 2 }}
+                  key={category.id}
+                >
+                  <CategoryCard
+                    category={category}
+                    onClick={() => handleView(category)}
+                    onClickEdit={() => handleEdit(category)}
+                    onClickDelete={() => handleDelete(category)}
+                    isAbleAction={true}
+                  />
+                </material.Grid>
               ))
             ) : (
-              <Grid item xs={12}>
-                <Alert severity="info" sx={{ borderRadius: 2 }}>
-                  No categories found. Create one to get started.
-                </Alert>
-              </Grid>
+              <material.Grid size={{ xs: 12 }}>
+                <HandleStatusSection type="empty" />
+              </material.Grid>
             )}
-          </Grid>
+          </material.Grid>
         )}
 
         <AddEditCategory
@@ -216,7 +95,7 @@ export default function HomeCategories() {
           message={`Are you sure you want to delete "${selectedCategory?.name}"? This action cannot be undone.`}
           isLoading={deleteMutation.isPending}
         />
-      </Container>
-    </Box>
+      </material.Container>
+    </material.Box>
   );
 }
