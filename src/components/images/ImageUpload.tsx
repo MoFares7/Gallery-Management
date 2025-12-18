@@ -16,7 +16,7 @@ import {
 } from "@mui/material";
 import { useState, useRef } from "react";
 import { CreateImageDto } from "@/types/image";
-import { useCategories } from "@/hooks/useCategories";
+import { useGetCategories } from "@/services/category.service";
 
 interface ImageUploadProps {
   open: boolean;
@@ -31,7 +31,7 @@ export default function ImageUpload({
   onSubmit,
   isLoading = false,
 }: ImageUploadProps) {
-  const { data: categories } = useCategories();
+  const { data: categories } = useGetCategories();
   const [name, setName] = useState("");
   const [url, setUrl] = useState("");
   const [categoryId, setCategoryId] = useState<number | undefined>();

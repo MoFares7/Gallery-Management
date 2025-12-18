@@ -4,7 +4,7 @@ import {
   useAnnotationsByImageId,
   useCreateAnnotation,
   useDeleteAnnotation,
-} from "@/hooks/useAnnotations";
+} from "@/services/annotation.service";
 import { CreateAnnotationDto } from "@/types/annotation";
 import { Image } from "@/types/image";
 import DeleteIcon from "@mui/icons-material/Delete";

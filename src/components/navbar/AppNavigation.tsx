@@ -12,7 +12,7 @@ export default function AppNavigation({}: AppNavigationProps) {
   const router = useRouter();
 
   const handleGalleryClick = () => {
-    router.push("/gallary");
+    router.push("/gallery");
   };
 
   const handleCategoriesClick = () => {

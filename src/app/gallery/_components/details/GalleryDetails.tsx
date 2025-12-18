@@ -1,6 +1,4 @@
-"use client";
-
-import { useImage } from "@/hooks/useImages";
+import { useGalleryDetails } from "@/app/gallery/_hooks/useGalleryDetails";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import {
   Alert,
@@ -14,8 +12,6 @@ import {
   Typography,
 } from "@mui/material";
 import dynamic from "next/dynamic";
-import { useParams, useRouter } from "next/navigation";
-import { useState } from "react";
 
 const ImageAnnotation = dynamic(
   () => import("@/components/annotations/ImageAnnotation"),
@@ -29,12 +25,15 @@ const ImageAnnotation = dynamic(
   }
 );
 
-export default function ImageDetailPage() {
-  const params = useParams();
-  const router = useRouter();
-  const imageId = Number(params.id);
-  const { data: image, isLoading, error } = useImage(imageId);
-  const [showAnnotation, setShowAnnotation] = useState(false);
+export default function GalleryDetails() {
+  const {
+    image,
+    isLoading,
+    error,
+    showAnnotation,
+    handleBack,
+    toggleAnnotation,
+  } = useGalleryDetails();
 
   if (isLoading) {
     return (
@@ -80,7 +79,7 @@ export default function ImageDetailPage() {
       <Container maxWidth="lg" sx={{ pt: 16, pb: 8 }}>
         <Button
           startIcon={<ArrowBackIcon />}
-          onClick={() => router.back()}
+          onClick={handleBack}
           sx={{ mb: 3, textTransform: "none" }}
         >
           Back to Gallery
@@ -191,7 +190,7 @@ export default function ImageDetailPage() {
 
           <Button
             variant="contained"
-            onClick={() => setShowAnnotation(!showAnnotation)}
+            onClick={toggleAnnotation}
             sx={{
               mb: 3,
               textTransform: "none",

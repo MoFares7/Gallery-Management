@@ -1,13 +1,13 @@
 import GalleryCard from "@/components/cards/GalleryCard";
 import PrimaryCard from "@/components/cards/PrimaryCard";
-import { useImages } from "@/hooks/useImages";
+import { useGetImages } from "@/services/image.service";
 import { Alert, Box, CircularProgress, Grid } from "@mui/material";
 import { useRouter } from "next/navigation";
 import { useMemo } from "react";
 
-export default function GallarySection() {
+export default function GallerySection() {
   const router = useRouter();
-  const { data: images, isLoading } = useImages();
+  const { data: images, isLoading } = useGetImages();
 
   const displayedImages = useMemo(() => {
     if (!images) return [];
@@ -15,7 +15,7 @@ export default function GallarySection() {
   }, [images]);
 
   return (
-    <PrimaryCard title="Image Gallery" href="/gallary">
+    <PrimaryCard title="Image Gallery" href="/gallery">
       <Box>
         {isLoading ? (
           <Box display="flex" justifyContent="center" p={4}>
@@ -29,7 +29,7 @@ export default function GallarySection() {
                 <Grid item xs={12} sm={6} md={4} lg={3} key={image.id}>
                   <GalleryCard
                     image={image}
-                    onClick={() => router.push(`/gallary/${image.id}`)}
+                    onClick={() => router.push(`/gallery/${image.id}`)}
                   />
                 </Grid>
               ))

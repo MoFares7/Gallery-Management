@@ -1,8 +1,6 @@
 "use client";
 import GalleryCard from "@/components/cards/GalleryCard";
 import { getCategoryColor, getCategoryIcon } from "@/constants";
-import { useCategory } from "@/hooks/useCategories";
-import { useImages } from "@/hooks/useImages";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import {
   Alert,
@@ -15,20 +13,11 @@ import {
   Paper,
   Typography,
 } from "@mui/material";
-import { useParams, useRouter } from "next/navigation";
-import { useMemo } from "react";
+import { useCategoriesDetails } from "../../_hooks/useCategoriesDetails";
 
 export default function CategoriesDetails() {
-  const params = useParams();
-  const router = useRouter();
-  const categoryId = Number(params.id);
-  const { data: category, isLoading, error } = useCategory(categoryId);
-  const { data: allImages } = useImages();
-
-  const categoryImages = useMemo(() => {
-    if (!allImages || !category) return [];
-    return allImages.filter((img) => img.categoryId === category.id);
-  }, [allImages, category]);
+  const { category, isLoading, error, categoryImages, handleBack } =
+    useCategoriesDetails();
 
   if (isLoading) {
     return (
@@ -74,7 +63,7 @@ export default function CategoriesDetails() {
       <Container maxWidth="lg" sx={{ pt: 16, pb: 8 }}>
         <Button
           startIcon={<ArrowBackIcon />}
-          onClick={() => router.back()}
+          onClick={handleBack}
           sx={{ mb: 3, textTransform: "none" }}
         >
           Back to Categories
@@ -144,7 +133,7 @@ export default function CategoriesDetails() {
               Statistics
             </Typography>
             <Grid container spacing={2}>
-              <Grid item xs={12} sm={6} md={4}>
+              <Grid item xs={12} sm={6} md={4} key="total-images">
                 <Paper
                   elevation={1}
                   sx={{
@@ -176,7 +165,7 @@ export default function CategoriesDetails() {
                 <Grid item xs={12} sm={6} md={4} key={image.id}>
                   <GalleryCard
                     image={image}
-                    onClick={() => router.push(`/gallary/${image.id}`)}
+                    onClick={() => router.push(`/gallery/${image.id}`)}
                   />
                 </Grid>
               ))}

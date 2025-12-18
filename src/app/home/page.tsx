@@ -2,8 +2,8 @@
 
 import { Box, Container } from "@mui/material";
 import CategoriesSection from "./_components/categories-section/CategoriesSection";
-import GallarySection from "./_components/gallary-section/GallarySection";
 import Hero from "./_components/hero/Hero";
+import GallerySection from "./_components/gallery-section/GallerySection";
 
 export default function HomePage() {
   return (
@@ -20,7 +20,7 @@ export default function HomePage() {
       >
         <Hero />
         <CategoriesSection />
-        <GallarySection />
+        <GallerySection />
       </Container>
     </Box>
   );

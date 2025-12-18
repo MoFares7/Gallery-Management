@@ -1,13 +1,6 @@
 "use client";
 import DeleteConfirmationDialog from "@/components/modals/DeleteConfirmationDialog";
 import { getCategoryColor, getCategoryIcon } from "@/constants";
-import {
-  useCategories,
-  useCreateCategory,
-  useDeleteCategory,
-  useUpdateCategory,
-} from "@/services/category.service";
-import { Category } from "@/types/category";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
@@ -23,73 +16,32 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useCategoriesHome } from "../../_hooks/useCategoriesHome";
 import AddEditCategory from "../add-edit/AddEditCategory";
 
 export default function HomeCategories() {
-  const router = useRouter();
-  const { data: categories, isLoading, error } = useCategories();
-  const createMutation = useCreateCategory();
-  const updateMutation = useUpdateCategory();
-  const deleteMutation = useDeleteCategory();
-
-  const [formOpen, setFormOpen] = useState(false);
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState<
-    Category | undefined
-  >();
-  const [hoveredId, setHoveredId] = useState<number | null>(null);
-
-  const handleCreate = () => {
-    setSelectedCategory(undefined);
-    setFormOpen(true);
-  };
-
-  const handleEdit = (category: Category) => {
-    setSelectedCategory(category);
-    setFormOpen(true);
-  };
-
-  const handleDelete = (category: Category) => {
-    setSelectedCategory(category);
-    setDeleteDialogOpen(true);
-  };
-
-  const handleView = (category: Category) => {
-    router.push(`/categories/${category.id}`);
-  };
-
-  const handleFormSubmit = (data: { name: string; description?: string }) => {
-    if (selectedCategory) {
-      updateMutation.mutate(
-        { id: selectedCategory.id, data },
-        {
-          onSuccess: () => {
-            setFormOpen(false);
-            setSelectedCategory(undefined);
-          },
-        }
-      );
-    } else {
-      createMutation.mutate(data, {
-        onSuccess: () => {
-          setFormOpen(false);
-        },
-      });
-    }
-  };
-
-  const handleConfirmDelete = () => {
-    if (selectedCategory) {
-      deleteMutation.mutate(selectedCategory.id, {
-        onSuccess: () => {
-          setDeleteDialogOpen(false);
-          setSelectedCategory(undefined);
-        },
-      });
-    }
-  };
+  const {
+    categories,
+    isLoading,
+    error,
+    formOpen,
+    setFormOpen,
+    deleteDialogOpen,
+    setDeleteDialogOpen,
+    selectedCategory,
+    setSelectedCategory,
+    hoveredId,
+    setHoveredId,
+    handleCreate,
+    handleEdit,
+    handleDelete,
+    handleView,
+    handleFormSubmit,
+    handleConfirmDelete,
+    createMutation,
+    updateMutation,
+    deleteMutation,
+  } = useCategoriesHome();
 
   return (
     <Box

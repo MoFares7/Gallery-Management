@@ -1,5 +1,5 @@
 import { getCategoryColor, getCategoryIcon } from "@/constants";
-import { useCategories } from "@/hooks/useCategories";
+import { useGetCategories } from "@/services/category.service";
 import PrimaryCard from "@/components/cards/PrimaryCard";
 import { Paper, Tooltip, Typography, Box } from "@mui/material";
 import Grid from "@mui/material/Grid";
@@ -8,7 +8,7 @@ import { useMemo } from "react";
 
 export default function CategoriesSection() {
   const router = useRouter();
-  const { data: categories } = useCategories();
+  const { data: categories } = useGetCategories();
 
   const displayedCategories = useMemo(() => {
     if (!categories) return [];

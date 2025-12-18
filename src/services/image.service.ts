@@ -11,14 +11,14 @@ import {
 
 const IMAGES_QUERY_KEY = "images";
 
-export const useImages = () => {
+export const useGetImages = () => {
   return useQuery({
     queryKey: [IMAGES_QUERY_KEY],
     queryFn: () => getAllImages({}),
   });
 };
 
-export const useImage = (id: number) => {
+export const useGetImageByID = (id: number) => {
   return useQuery({
     queryKey: [IMAGES_QUERY_KEY, id],
     queryFn: () => getImageById(id, {}),

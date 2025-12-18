@@ -1,44 +1,32 @@
+import { type ImageFilters } from "@/types/image";
+import ClearIcon from "@mui/icons-material/Clear";
 import {
   Box,
-  TextField,
-  Select,
-  MenuItem,
+  Button,
   FormControl,
   InputLabel,
-  Button,
+  MenuItem,
+  Select,
+  TextField,
 } from "@mui/material";
-import { ImageFilters } from "@/types/image";
-import { useCategories } from "@/hooks/useCategories";
-import ClearIcon from "@mui/icons-material/Clear";
+import { useGalleryFilter } from "../../_hooks/useGalleryFilter";
 
-interface ImageFiltersProps {
+interface GalleryFiltersProps {
   filters: ImageFilters;
   onFiltersChange: (filters: ImageFilters) => void;
 }
 
-export default function ImageFiltersComponent({
+export default function GalleryFilters({
   filters,
   onFiltersChange,
-}: ImageFiltersProps) {
-  const { data: categories } = useCategories();
-
-  const handleFilterChange = (
-    key: keyof ImageFilters,
-    value: string | number | undefined
-  ) => {
-    onFiltersChange({
-      ...filters,
-      [key]: value || undefined,
-    });
-  };
-
-  const handleClearFilters = () => {
-    onFiltersChange({});
-  };
-
-  const hasActiveFilters = Object.keys(filters).some(
-    (key) => filters[key as keyof ImageFilters] !== undefined
-  );
+}: GalleryFiltersProps) {
+  const {
+    filters: filtersState,
+    handleFilterChange,
+    handleClearFilters,
+    hasActiveFilters,
+    categories,
+  } = useGalleryFilter({ filters, onFiltersChange });
 
   return (
     <Box
@@ -52,7 +40,7 @@ export default function ImageFiltersComponent({
     >
       <TextField
         label="Search by Name"
-        value={filters.name || ""}
+        value={filtersState.name || ""}
         onChange={(e) => handleFilterChange("name", e.target.value)}
         size="small"
         sx={{ minWidth: 200 }}
@@ -61,7 +49,7 @@ export default function ImageFiltersComponent({
       <FormControl size="small" sx={{ minWidth: 150 }}>
         <InputLabel>Category</InputLabel>
         <Select
-          value={filters.categoryId || ""}
+          value={filtersState.categoryId || ""}
           onChange={(e) =>
             handleFilterChange(
               "categoryId",
@@ -84,7 +72,7 @@ export default function ImageFiltersComponent({
       <TextField
         label="Min Width"
         type="number"
-        value={filters.minWidth || ""}
+        value={filtersState.minWidth || ""}
         onChange={(e) =>
           handleFilterChange(
             "minWidth",
@@ -98,7 +86,7 @@ export default function ImageFiltersComponent({
       <TextField
         label="Min Height"
         type="number"
-        value={filters.minHeight || ""}
+        value={filtersState.minHeight || ""}
         onChange={(e) =>
           handleFilterChange(
             "minHeight",

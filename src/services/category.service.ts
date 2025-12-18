@@ -15,14 +15,14 @@ import {
 
 const CATEGORIES_QUERY_KEY = "categories";
 
-export const useCategories = () => {
+export const useGetCategories = () => {
   return useQuery({
     queryKey: [CATEGORIES_QUERY_KEY],
     queryFn: () => getAllCategories({}),
   });
 };
 
-export const useCategory = (id: number) => {
+export const useGetCategoryByID = (id: number) => {
   return useQuery({
     queryKey: [CATEGORIES_QUERY_KEY, id],
     queryFn: () => getCategoryById(id, {}),
