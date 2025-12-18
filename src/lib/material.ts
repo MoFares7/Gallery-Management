@@ -30,5 +30,10 @@ export const material = {
   CardMedia: MuiMaterial.CardMedia,
   Divider: MuiMaterial.Divider,
   Chip: MuiMaterial.Chip,
-  ThemeProvider:MuiMaterial.ThemeProvider
+  ThemeProvider: MuiMaterial.ThemeProvider,
+  Drawer: MuiMaterial.Drawer,
+  List: MuiMaterial.List,
+  ListItem: MuiMaterial.ListItem,
+  ListItemButton: MuiMaterial.ListItemButton,
+  ListItemText: MuiMaterial.ListItemText,
 } as const;

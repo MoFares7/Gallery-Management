@@ -2,17 +2,18 @@
 
 import InputFileField from "@/components/inputs/InputFileField";
 import FormikInputSelectField from "@/components/inputs/formik-input/FormikInputSelectField";
+import FormikInputTextField from "@/components/inputs/formik-input/FormikInputTextField";
 import { material } from "@/lib/material";
 import { useGetCategories } from "@/services/category.service";
-import { CreateImageDto } from "@/types/image";
+import { CreateImageDto, Image as ImageType } from "@/types/image";
 import { Field, Form, Formik } from "formik";
-import { imageGalleryValidationSchema } from "../../_validation";
 
 interface AddEditImageGallaryProps {
   open: boolean;
   onClose: () => void;
   onSubmit: (data: CreateImageDto) => void;
   isLoading?: boolean;
+  imageToEdit?: ImageType | null;
 }
 
 interface FormValues {
@@ -27,18 +28,25 @@ export default function AddEditImageGallary({
   onClose,
   onSubmit,
   isLoading = false,
+  imageToEdit,
 }: AddEditImageGallaryProps) {
+  const isEditMode = !!imageToEdit;
+
   const initialValues: FormValues = {
     file: null,
-    name: "",
-    url: "",
-    categoryId: undefined,
+    name: imageToEdit?.name || "",
+    url: imageToEdit?.url || "",
+    categoryId: imageToEdit?.categoryId,
   };
 
   const { data: categories } = useGetCategories();
 
   const handleSubmit = (values: FormValues) => {
-    if (!values.name || !values.url || !values.file) {
+    if (!values.name || !values.url) {
+      return;
+    }
+
+    if (!isEditMode && !values.file) {
       return;
     }
 
@@ -90,17 +98,46 @@ export default function AddEditImageGallary({
     <material.Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
       <Formik
         initialValues={initialValues}
-        validationSchema={imageGalleryValidationSchema}
+        // validationSchema={imageGalleryValidationSchema}
         onSubmit={handleSubmit}
         enableReinitialize
+        key={imageToEdit?.id || "new"}
       >
         {({ isSubmitting, resetForm, values }) => (
           <Form>
-            <material.DialogTitle>Upload Image</material.DialogTitle>
+            <material.DialogTitle>
+              {isEditMode ? "Edit Image" : "Upload Image"}
+            </material.DialogTitle>
             <material.DialogContent>
               <material.Box
-                sx={{ display: "flex", flexDirection: "column", gap: 2, pt: 1 }}
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 2,
+                  pt: 1,
+                }}
               >
+                <Field
+                  component={FormikInputTextField}
+                  name="name"
+                  label="Name"
+                  size="small"
+                  fullWidth
+                />
+                {isEditMode && (
+                  <material.Box
+                    component="img"
+                    src={values.url}
+                    alt="Current Image"
+                    sx={{
+                      maxWidth: "100%",
+                      maxHeight: 200,
+                      objectFit: "contain",
+                      border: "1px solid #ddd",
+                      borderRadius: 1,
+                    }}
+                  />
+                )}
                 <Field
                   component={InputFileField}
                   name="file"
@@ -108,8 +145,7 @@ export default function AddEditImageGallary({
                   size="small"
                   fullWidth
                 />
-
-                {values.url && (
+                {!isEditMode && values.url && (
                   <material.Box
                     component="img"
                     src={values.url}
@@ -157,7 +193,7 @@ export default function AddEditImageGallary({
                   isSubmitting ||
                   !values.name ||
                   !values.url ||
-                  !values.file
+                  (!isEditMode && !values.file)
                 }
                 startIcon={
                   isLoading ? (
@@ -165,7 +201,7 @@ export default function AddEditImageGallary({
                   ) : undefined
                 }
               >
-                Upload
+                {isEditMode ? "Update" : "Upload"}
               </material.Button>
             </material.DialogActions>
           </Form>

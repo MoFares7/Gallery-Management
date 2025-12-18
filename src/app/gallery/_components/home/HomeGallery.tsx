@@ -24,10 +24,12 @@ export default function HomeGallery() {
     isLoading,
     error,
     handleDelete,
+    handleEdit,
     handleView,
     handleConfirmDelete,
     handleUploadSubmit,
     createMutation,
+    updateMutation,
     deleteMutation,
   } = useGalleryHome();
 
@@ -39,7 +41,7 @@ export default function HomeGallery() {
         background: "background.gradient",
       }}
     >
-      <material.Container maxWidth="xl" sx={{ pt: 16, pb: 8 }}>
+      <material.Container maxWidth="xl" sx={{ pt: { xs: 4, md: 8, lg: 16 } }}>
         <PageHeader
           title="Image Gallery"
           buttonText="Upload Image"
@@ -63,6 +65,7 @@ export default function HomeGallery() {
                   <SecondaryCard
                     image={image}
                     onClick={() => handleView(image)}
+                    onClickEdit={() => handleEdit(image)}
                     onClickDelete={() => handleDelete(image)}
                     isAbleAction={true}
                   />
@@ -78,9 +81,13 @@ export default function HomeGallery() {
 
         <AddEditImageGallary
           open={uploadOpen}
-          onClose={() => setUploadOpen(false)}
+          onClose={() => {
+            setUploadOpen(false);
+            setSelectedImage(undefined);
+          }}
           onSubmit={handleUploadSubmit}
-          isLoading={createMutation.isPending}
+          isLoading={createMutation.isPending || updateMutation.isPending}
+          imageToEdit={selectedImage}
         />
 
         <DeleteConfirmationDialog

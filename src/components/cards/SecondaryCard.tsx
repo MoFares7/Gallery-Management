@@ -4,6 +4,8 @@ import { material } from "@/lib/material";
 import { materialIcons } from "@/lib/material-icons";
 import { Image } from "@/types/image";
 import { useState } from "react";
+import { useMediaQuery } from "@mui/material";
+import { theme } from "@/theme";
 
 interface SecondaryCardProps {
   image: Image;
@@ -21,6 +23,7 @@ export default function SecondaryCard({
   isAbleAction = false,
 }: SecondaryCardProps) {
   const [hovered, setHovered] = useState(false);
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
   return (
     <material.Card
@@ -57,7 +60,7 @@ export default function SecondaryCard({
           }}
           noWrap
         >
-          {image.name}
+          {image?.name}
         </material.Typography>
         {image?.metadata?.resolution && (
           <material.Typography
@@ -71,7 +74,7 @@ export default function SecondaryCard({
         )}
       </material.CardContent>
 
-      {hovered && isAbleAction && (
+      {(hovered || isMobile) && isAbleAction && (
         <material.Box
           sx={{
             position: "absolute",
@@ -79,6 +82,13 @@ export default function SecondaryCard({
             right: 8,
             display: "flex",
             gap: 0.5,
+            zIndex: 10,
+          }}
+          onClick={(e) => {
+            e.stopPropagation();
+          }}
+          onTouchStart={(e) => {
+            e.stopPropagation();
           }}
         >
           {onClickEdit && (
@@ -86,6 +96,12 @@ export default function SecondaryCard({
               <material.IconButton
                 size="small"
                 onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  onClickEdit();
+                }}
+                onTouchEnd={(e) => {
+                  e.preventDefault();
                   e.stopPropagation();
                   onClickEdit();
                 }}
@@ -103,6 +119,12 @@ export default function SecondaryCard({
               <material.IconButton
                 size="small"
                 onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  onClickDelete();
+                }}
+                onTouchEnd={(e) => {
+                  e.preventDefault();
                   e.stopPropagation();
                   onClickDelete();
                 }}

@@ -1,8 +1,12 @@
+"use client";
+
 import { getCategoryColor, getCategoryIcon } from "@/constants";
 import { Category } from "@/types/category";
 import { material } from "@/lib/material";
 import { materialIcons } from "@/lib/material-icons";
 import { useState } from "react";
+import { useMediaQuery } from "@mui/material";
+import { theme } from "@/theme";
 
 interface CategoryCardProps {
   category: Category;
@@ -19,6 +23,7 @@ export default function CategoryCard({
   isAbleAction = false,
 }: CategoryCardProps) {
   const [hoveredId, setHoveredId] = useState<number | null>(null);
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   return (
     <material.Tooltip title={category.description || category.name} arrow>
       <material.Paper
@@ -69,7 +74,7 @@ export default function CategoryCard({
         >
           {category.name}
         </material.Typography>
-        {hoveredId && isAbleAction && (
+        {(hoveredId === category.id || isMobile) && isAbleAction && (
           <material.Box
             sx={{
               position: "absolute",
@@ -77,11 +82,24 @@ export default function CategoryCard({
               right: 8,
               display: "flex",
               gap: 0.5,
+              zIndex: 10,
+            }}
+            onClick={(e) => {
+              e.stopPropagation();
+            }}
+            onTouchStart={(e) => {
+              e.stopPropagation();
             }}
           >
             <material.IconButton
               size="small"
               onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                onClickEdit?.();
+              }}
+              onTouchEnd={(e) => {
+                e.preventDefault();
                 e.stopPropagation();
                 onClickEdit?.();
               }}
@@ -96,6 +114,12 @@ export default function CategoryCard({
             <material.IconButton
               size="small"
               onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                onClickDelete?.();
+              }}
+              onTouchEnd={(e) => {
+                e.preventDefault();
                 e.stopPropagation();
                 onClickDelete?.();
               }}
