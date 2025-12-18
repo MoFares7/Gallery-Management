@@ -1,0 +1,205 @@
+"use client";
+import GalleryCard from "@/components/cards/GalleryCard";
+import { getCategoryColor, getCategoryIcon } from "@/constants";
+import { useCategory } from "@/hooks/useCategories";
+import { useImages } from "@/hooks/useImages";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import {
+  Alert,
+  Box,
+  Button,
+  CircularProgress,
+  Container,
+  Divider,
+  Grid,
+  Paper,
+  Typography,
+} from "@mui/material";
+import { useParams, useRouter } from "next/navigation";
+import { useMemo } from "react";
+
+export default function CategoriesDetails() {
+  const params = useParams();
+  const router = useRouter();
+  const categoryId = Number(params.id);
+  const { data: category, isLoading, error } = useCategory(categoryId);
+  const { data: allImages } = useImages();
+
+  const categoryImages = useMemo(() => {
+    if (!allImages || !category) return [];
+    return allImages.filter((img) => img.categoryId === category.id);
+  }, [allImages, category]);
+
+  if (isLoading) {
+    return (
+      <Box
+        sx={{
+          minHeight: "100vh",
+          backgroundColor: "#fafafa",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  if (error || !category) {
+    return (
+      <Box
+        sx={{
+          minHeight: "100vh",
+          backgroundColor: "#fafafa",
+        }}
+      >
+        <Container maxWidth="xl" sx={{ pt: 16, pb: 8 }}>
+          <Alert severity="error">
+            Failed to load category. Please try again.
+          </Alert>
+        </Container>
+      </Box>
+    );
+  }
+
+  return (
+    <Box
+      sx={{
+        minHeight: "100vh",
+        backgroundColor: "#fafafa",
+        background: "linear-gradient(to bottom, #ffffff 0%, #f5f7fa 100%)",
+      }}
+    >
+      <Container maxWidth="lg" sx={{ pt: 16, pb: 8 }}>
+        <Button
+          startIcon={<ArrowBackIcon />}
+          onClick={() => router.back()}
+          sx={{ mb: 3, textTransform: "none" }}
+        >
+          Back to Categories
+        </Button>
+
+        <Paper
+          elevation={3}
+          sx={{
+            p: 4,
+            borderRadius: 3,
+            backgroundColor: "white",
+            mb: 4,
+          }}
+        >
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              gap: 3,
+              mb: 3,
+            }}
+          >
+            <Paper
+              elevation={4}
+              sx={{
+                width: 120,
+                height: 120,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                backgroundColor: getCategoryColor(category.id),
+                color: "white",
+                borderRadius: 3,
+              }}
+            >
+              <Typography
+                variant="h1"
+                sx={{
+                  fontWeight: 700,
+                  fontSize: "4rem",
+                  textShadow: "0 2px 4px rgba(0,0,0,0.2)",
+                }}
+              >
+                {getCategoryIcon(category.name)}
+              </Typography>
+            </Paper>
+            <Box sx={{ flex: 1 }}>
+              <Typography
+                variant="h3"
+                component="h1"
+                sx={{ fontWeight: 700, mb: 1 }}
+              >
+                {category.name}
+              </Typography>
+              {category.description && (
+                <Typography variant="body1" color="text.secondary">
+                  {category.description}
+                </Typography>
+              )}
+            </Box>
+          </Box>
+
+          <Divider sx={{ my: 3 }} />
+
+          <Box>
+            <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>
+              Statistics
+            </Typography>
+            <Grid container spacing={2}>
+              <Grid item xs={12} sm={6} md={4}>
+                <Paper
+                  elevation={1}
+                  sx={{
+                    p: 2,
+                    backgroundColor: "#f8f9fa",
+                    borderRadius: 2,
+                  }}
+                >
+                  <Typography variant="body2" color="text.secondary">
+                    Total Images
+                  </Typography>
+                  <Typography variant="h4" fontWeight={700}>
+                    {categoryImages.length}
+                  </Typography>
+                </Paper>
+              </Grid>
+            </Grid>
+          </Box>
+        </Paper>
+
+        {categoryImages.length > 0 && (
+          <Box>
+            <Typography variant="h5" sx={{ mb: 3, fontWeight: 600 }}>
+              Images in this Category ({categoryImages.length})
+            </Typography>
+            <Grid container spacing={3}>
+              {categoryImages.map((image) => (
+                // @ts-expect-error MUI v7 Grid types don't include item prop but it works at runtime
+                <Grid item xs={12} sm={6} md={4} key={image.id}>
+                  <GalleryCard
+                    image={image}
+                    onClick={() => router.push(`/gallary/${image.id}`)}
+                  />
+                </Grid>
+              ))}
+            </Grid>
+          </Box>
+        )}
+
+        {categoryImages.length === 0 && (
+          <Paper
+            elevation={1}
+            sx={{
+              p: 4,
+              textAlign: "center",
+              backgroundColor: "white",
+              borderRadius: 3,
+            }}
+          >
+            <Typography variant="body1" color="text.secondary">
+              No images in this category yet.
+            </Typography>
+          </Paper>
+        )}
+      </Container>
+    </Box>
+  );
+}

@@ -1,0 +1,220 @@
+"use client";
+
+import { useImage } from "@/hooks/useImages";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import {
+  Alert,
+  Box,
+  Button,
+  Chip,
+  CircularProgress,
+  Container,
+  Divider,
+  Paper,
+  Typography,
+} from "@mui/material";
+import dynamic from "next/dynamic";
+import { useParams, useRouter } from "next/navigation";
+import { useState } from "react";
+
+const ImageAnnotation = dynamic(
+  () => import("@/components/annotations/ImageAnnotation"),
+  {
+    ssr: false,
+    loading: () => (
+      <Box display="flex" justifyContent="center" p={4}>
+        <CircularProgress />
+      </Box>
+    ),
+  }
+);
+
+export default function ImageDetailPage() {
+  const params = useParams();
+  const router = useRouter();
+  const imageId = Number(params.id);
+  const { data: image, isLoading, error } = useImage(imageId);
+  const [showAnnotation, setShowAnnotation] = useState(false);
+
+  if (isLoading) {
+    return (
+      <Box
+        sx={{
+          minHeight: "100vh",
+          backgroundColor: "#fafafa",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  if (error || !image) {
+    return (
+      <Box
+        sx={{
+          minHeight: "100vh",
+          backgroundColor: "#fafafa",
+        }}
+      >
+        <Container maxWidth="xl" sx={{ pt: 16, pb: 8 }}>
+          <Alert severity="error">
+            Failed to load image. Please try again.
+          </Alert>
+        </Container>
+      </Box>
+    );
+  }
+
+  return (
+    <Box
+      sx={{
+        minHeight: "100vh",
+        backgroundColor: "#fafafa",
+        background: "linear-gradient(to bottom, #ffffff 0%, #f5f7fa 100%)",
+      }}
+    >
+      <Container maxWidth="lg" sx={{ pt: 16, pb: 8 }}>
+        <Button
+          startIcon={<ArrowBackIcon />}
+          onClick={() => router.back()}
+          sx={{ mb: 3, textTransform: "none" }}
+        >
+          Back to Gallery
+        </Button>
+
+        <Paper
+          elevation={3}
+          sx={{
+            p: 4,
+            borderRadius: 3,
+            backgroundColor: "white",
+          }}
+        >
+          <Box sx={{ mb: 4 }}>
+            <Typography
+              variant="h3"
+              component="h1"
+              sx={{ fontWeight: 700, mb: 2 }}
+            >
+              {image.name}
+            </Typography>
+            {image.category && (
+              <Chip
+                label={image.category.name}
+                sx={{
+                  bgcolor: "#e3f2fd",
+                  color: "#1976d2",
+                  fontWeight: 500,
+                  fontSize: "0.9rem",
+                  height: 32,
+                }}
+              />
+            )}
+          </Box>
+
+          <Box
+            sx={{
+              mb: 4,
+              borderRadius: 2,
+              overflow: "hidden",
+              boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
+            }}
+          >
+            <Box
+              component="img"
+              src={image.url}
+              alt={image.name}
+              sx={{
+                width: "100%",
+                height: "auto",
+                display: "block",
+              }}
+            />
+          </Box>
+
+          {image.metadata && (
+            <Paper
+              elevation={1}
+              sx={{
+                p: 3,
+                mb: 4,
+                backgroundColor: "#f8f9fa",
+                borderRadius: 2,
+              }}
+            >
+              <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>
+                Image Details
+              </Typography>
+              <Divider sx={{ mb: 2 }} />
+              <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5 }}>
+                {image.metadata.width && image.metadata.height && (
+                  <Box>
+                    <Typography variant="body2" color="text.secondary">
+                      Dimensions
+                    </Typography>
+                    <Typography variant="body1" fontWeight={500}>
+                      {image.metadata.width} × {image.metadata.height} pixels
+                    </Typography>
+                  </Box>
+                )}
+                {image.metadata.size && (
+                  <Box>
+                    <Typography variant="body2" color="text.secondary">
+                      File Size
+                    </Typography>
+                    <Typography variant="body1" fontWeight={500}>
+                      {(image.metadata.size / 1024).toFixed(2)} KB
+                    </Typography>
+                  </Box>
+                )}
+                {image.metadata.format && (
+                  <Box>
+                    <Typography variant="body2" color="text.secondary">
+                      Format
+                    </Typography>
+                    <Typography
+                      variant="body1"
+                      fontWeight={500}
+                      textTransform="uppercase"
+                    >
+                      {image.metadata.format}
+                    </Typography>
+                  </Box>
+                )}
+              </Box>
+            </Paper>
+          )}
+
+          <Button
+            variant="contained"
+            onClick={() => setShowAnnotation(!showAnnotation)}
+            sx={{
+              mb: 3,
+              textTransform: "none",
+              borderRadius: 2,
+            }}
+          >
+            {showAnnotation ? "Hide" : "Show"} Annotations
+          </Button>
+
+          {showAnnotation && image && (
+            <Box
+              sx={{
+                mt: 3,
+                p: 3,
+                borderRadius: 2,
+                backgroundColor: "#f8f9fa",
+              }}
+            >
+              <ImageAnnotation image={image} />
+            </Box>
+          )}
+        </Paper>
+      </Container>
+    </Box>
+  );
+}
