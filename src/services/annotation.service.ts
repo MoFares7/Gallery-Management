@@ -35,7 +35,6 @@ export const useCreateAnnotation = () => {
       queryClient.invalidateQueries({
         queryKey: [ANNOTATIONS_QUERY_KEY, "image", variables.imageId],
       });
-      queryClient.invalidateQueries({ queryKey: [ANNOTATIONS_QUERY_KEY] });
       toast.success("Annotation created successfully");
     },
     onError: () => {

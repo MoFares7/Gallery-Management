@@ -161,30 +161,35 @@ export default function GalleryDetails() {
                     </Typography>
                   </Box>
                 )}
-                {image.metadata.size && (
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    gap: 1,
+                  }}
+                >
                   <Box>
                     <Typography variant="body2" color="text.secondary">
                       File Size
                     </Typography>
                     <Typography variant="body1" fontWeight={500}>
-                      {(image.metadata.size / 1024).toFixed(2)} KB
+                      {image?.metadata?.size}
                     </Typography>
                   </Box>
-                )}
-                {image.metadata.format && (
                   <Box>
                     <Typography variant="body2" color="text.secondary">
-                      Format
+                      Resolution
                     </Typography>
                     <Typography
                       variant="body1"
                       fontWeight={500}
                       textTransform="uppercase"
                     >
-                      {image.metadata.format}
+                      {image?.metadata?.resolution}
                     </Typography>
                   </Box>
-                )}
+                </Box>
               </Box>
             </Paper>
           )}

@@ -10,6 +10,7 @@ import {
   CircularProgress,
   Box,
 } from "@mui/material";
+import PrimaryButton from "../buttons/PrimaryButton";
 
 interface DeleteConfirmationDialogProps {
   open: boolean;
@@ -34,23 +35,21 @@ export default function DeleteConfirmationDialog({
       <DialogContent>
         <DialogContentText>{message}</DialogContentText>
       </DialogContent>
-      <DialogActions>
-        <Button onClick={onClose} disabled={isLoading}>
-          Cancel
-        </Button>
-        <Button
-          onClick={onConfirm}
-          color="error"
-          variant="contained"
+      <DialogActions sx={{ px: 2, pb: 2 }}>
+        <PrimaryButton
+          variant="outlined"
+          onClick={onClose}
+          buttonText="Cancel"
           disabled={isLoading}
-          startIcon={
-            isLoading ? (
-              <CircularProgress size={16} color="inherit" />
-            ) : undefined
-          }
-        >
-          Delete
-        </Button>
+          backgroundColor="white"
+          hoverBackgroundColor="background.default"
+        />
+        <PrimaryButton
+          onClick={onConfirm}
+          buttonText="Delete"
+          loading={isLoading}
+          disabled={isLoading}
+        />
       </DialogActions>
     </Dialog>
   );

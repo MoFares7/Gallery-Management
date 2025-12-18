@@ -30,6 +30,34 @@ export const useGalleryHome = () => {
   const [selectedImage, setSelectedImage] = useState<Image | undefined>();
   const [filters, setFilters] = useState<ImageFilters>({});
 
+  const parseSizeToBytes = (sizeStr: string): number => {
+    const match = sizeStr.match(/^(\d+(?:\.\d+)?)\s*(KB|MB|GB)?$/i);
+    if (!match) return 0;
+    const value = parseFloat(match[1]);
+    const unit = match[2]?.toUpperCase() || "B";
+    switch (unit) {
+      case "KB":
+        return value * 1024;
+      case "MB":
+        return value * 1024 * 1024;
+      case "GB":
+        return value * 1024 * 1024 * 1024;
+      default:
+        return value;
+    }
+  };
+
+  const parseResolution = (
+    resolutionStr: string
+  ): { width: number; height: number } | null => {
+    const match = resolutionStr.match(/^(\d+)\s*x\s*(\d+)$/i);
+    if (!match) return null;
+    return {
+      width: parseInt(match[1], 10),
+      height: parseInt(match[2], 10),
+    };
+  };
+
   const filteredImages = useMemo(() => {
     if (!images) return [];
 
@@ -45,15 +73,51 @@ export const useGalleryHome = () => {
         return false;
       }
 
-      if (filters.minWidth && (image.metadata?.width || 0) < filters.minWidth) {
-        return false;
+      if (filters.metadata?.size && image.metadata?.size !== undefined) {
+        const filterSizeStr = filters.metadata.size;
+        const imageSize = image.metadata.size;
+
+        if (typeof imageSize === "string") {
+          const filterSizeBytes = parseSizeToBytes(filterSizeStr);
+          const imageSizeBytes = parseSizeToBytes(imageSize);
+
+          if (filterSizeBytes === 0 && imageSizeBytes === 0) {
+            if (
+              !String(imageSize)
+                .toLowerCase()
+                .includes(String(filterSizeStr).toLowerCase())
+            ) {
+              return false;
+            }
+          } else if (imageSizeBytes < filterSizeBytes) {
+            return false;
+          }
+        } else if (typeof imageSize === "number") {
+          const filterSizeBytes = parseSizeToBytes(filterSizeStr);
+          if (filterSizeBytes > 0 && imageSize < filterSizeBytes) {
+            return false;
+          }
+        }
       }
 
-      if (
-        filters.minHeight &&
-        (image.metadata?.height || 0) < filters.minHeight
-      ) {
-        return false;
+      if (filters.metadata?.resolution && image.metadata?.resolution) {
+        const filterRes = parseResolution(filters.metadata.resolution);
+        const imageRes = parseResolution(String(image.metadata.resolution));
+
+        if (filterRes && imageRes) {
+          if (
+            imageRes.width < filterRes.width ||
+            imageRes.height < filterRes.height
+          ) {
+            return false;
+          }
+        } else {
+          const imageResStr = String(image.metadata.resolution).toLowerCase();
+          const filterResStr = filters.metadata.resolution.toLowerCase();
+          if (!imageResStr.includes(filterResStr)) {
+            return false;
+          }
+        }
       }
 
       return true;

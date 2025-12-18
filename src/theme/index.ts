@@ -38,8 +38,6 @@ export const theme = createTheme({
     text: {
       primary: "#333333",
       secondary: "#666666",
-      // @ts-expect-error: extend MUI text palette with "tertiary"
-      tertiary: "#999999",
     },
     error: {
       main: "#667eea",
@@ -122,39 +120,6 @@ export const theme = createTheme({
   },
   shape: {
     borderRadius: 8,
-  },
-  components: {
-    MuiButton: {
-      styleOverrides: {
-        root: {
-          borderRadius: 8,
-          textTransform: "none",
-          fontWeight: 500,
-          padding: "8px 16px",
-        },
-        contained: {
-          boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
-          "&:hover": {
-            boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
-          },
-        },
-      },
-    },
-    MuiPaper: {
-      styleOverrides: {
-        root: {
-          borderRadius: 12,
-        },
-      },
-    },
-    MuiCard: {
-      styleOverrides: {
-        root: {
-          borderRadius: 12,
-          boxShadow: "0 4px 20px rgba(0,0,0,0.08)",
-        },
-      },
-    },
   },
 });
 

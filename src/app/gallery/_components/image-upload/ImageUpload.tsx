@@ -17,6 +17,7 @@ import {
 import { useState, useRef } from "react";
 import { CreateImageDto } from "@/types/image";
 import { useGetCategories } from "@/services/category.service";
+import InputSelectField from "../../../../components/inputs/InputSelectField";
 
 interface ImageUploadProps {
   open: boolean;
@@ -43,8 +44,6 @@ export default function ImageUpload({
     if (selectedFile) {
       setFile(selectedFile);
       setName(selectedFile.name);
-
-      // Create a local URL for preview
       const reader = new FileReader();
       reader.onloadend = () => {
         setUrl(reader.result as string);
@@ -60,7 +59,6 @@ export default function ImageUpload({
       return;
     }
 
-    // Get image dimensions
     const img = new Image();
     img.onload = () => {
       const metadata = {
@@ -79,8 +77,6 @@ export default function ImageUpload({
         categoryId,
         metadata,
       });
-
-      // Reset form
       setName("");
       setUrl("");
       setCategoryId(undefined);
@@ -91,7 +87,6 @@ export default function ImageUpload({
     };
 
     img.onerror = () => {
-      // If image fails to load, submit without dimensions
       const metadata = {
         size: file?.size,
         format:
@@ -106,8 +101,6 @@ export default function ImageUpload({
         categoryId,
         metadata,
       });
-
-      // Reset form
       setName("");
       setUrl("");
       setCategoryId(undefined);
@@ -143,7 +136,7 @@ export default function ImageUpload({
               fullWidth
               disabled={isLoading}
             >
-              Select Image File
+              Select Image
               <input
                 type="file"
                 ref={fileInputRef}
@@ -168,53 +161,20 @@ export default function ImageUpload({
               />
             )}
 
-            <TextField
-              label="Image Name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              required
-              fullWidth
-              disabled={isLoading}
-            />
-
-            <TextField
-              label="Image URL"
-              value={url}
-              onChange={(e) => setUrl(e.target.value)}
-              required
-              fullWidth
-              disabled={isLoading || !!file}
-              helperText={
-                file
-                  ? "URL is set from uploaded file"
-                  : "Enter image URL or upload a file"
+            <InputSelectField
+              label="Category"
+              value={categoryId}
+              onChange={(value) => setCategoryId(value as number | undefined)}
+              options={
+                categories?.map((cat) => ({
+                  value: cat.id,
+                  label: cat.name,
+                })) || []
               }
             />
-
-            <FormControl fullWidth>
-              <InputLabel>Category</InputLabel>
-              <Select
-                value={categoryId || ""}
-                onChange={(e) =>
-                  setCategoryId(
-                    e.target.value ? Number(e.target.value) : undefined
-                  )
-                }
-                label="Category"
-                disabled={isLoading}
-              >
-                <MenuItem value="">
-                  <em>None</em>
-                </MenuItem>
-                {categories?.map((cat) => (
-                  <MenuItem key={cat.id} value={cat.id}>
-                    {cat.name}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
           </Box>
         </DialogContent>
+
         <DialogActions>
           <Button onClick={handleClose} disabled={isLoading}>
             Cancel

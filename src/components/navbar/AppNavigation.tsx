@@ -12,13 +12,20 @@ interface AppNavigationProps {
 export default function AppNavigation({}: AppNavigationProps) {
   const router = useRouter();
 
-  const handleGalleryClick = () => {
-    router.push("/gallery");
-  };
-
-  const handleCategoriesClick = () => {
-    router.push("/categories");
-  };
+  const tabsList = [
+    {
+      label: "Gallery",
+      href: "/gallery",
+    },
+    {
+      label: "Categories",
+      href: "/categories",
+    },
+    {
+      label: "Annotations",
+      href: "/annotations",
+    },
+  ];
 
   return (
     <AppBar
@@ -71,32 +78,22 @@ export default function AppNavigation({}: AppNavigationProps) {
             justifyContent: "end",
           }}
         >
-          <Typography
-            variant="body2"
-            onClick={handleGalleryClick}
-            sx={{
-              color: "text.secondary",
-              cursor: "pointer",
-              "&:hover": { color: "primary.main" },
-              display: { xs: "none", md: "block" },
-              transition: "color 0.2s ease",
-            }}
-          >
-            Gallery
-          </Typography>
-          <Typography
-            variant="body2"
-            onClick={handleCategoriesClick}
-            sx={{
-              color: "text.secondary",
-              cursor: "pointer",
-              "&:hover": { color: "primary.main" },
-              display: { xs: "none", md: "block" },
-              transition: "color 0.2s ease",
-            }}
-          >
-            Categories
-          </Typography>
+          {tabsList.map((tab) => (
+            <Typography
+              key={tab.label}
+              variant="body2"
+              onClick={() => router.push(tab.href)}
+              sx={{
+                color: "text.secondary",
+                cursor: "pointer",
+                "&:hover": { color: "primary.main" },
+                display: { xs: "none", md: "block" },
+                transition: "color 0.2s ease",
+              }}
+            >
+              {tab.label}
+            </Typography>
+          ))}
         </Box>
       </Toolbar>
     </AppBar>

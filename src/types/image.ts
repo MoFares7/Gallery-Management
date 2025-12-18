@@ -43,10 +43,8 @@ export interface UpdateImageDto {
 export interface ImageFilters {
   name?: string;
   categoryId?: number;
-  minSize?: number;
-  maxSize?: number;
-  minWidth?: number;
-  maxWidth?: number;
-  minHeight?: number;
-  maxHeight?: number;
+  metadata?: {
+    size?: string;
+    resolution?: string;
+  };
 }

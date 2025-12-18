@@ -20,7 +20,6 @@ export const useCategoriesHome = () => {
   const [selectedCategory, setSelectedCategory] = useState<
     Category | undefined
   >();
-  const [hoveredId, setHoveredId] = useState<number | null>(null);
 
   const handleCreate = () => {
     setSelectedCategory(undefined);
@@ -82,8 +81,6 @@ export const useCategoriesHome = () => {
     setDeleteDialogOpen,
     selectedCategory,
     setSelectedCategory,
-    hoveredId,
-    setHoveredId,
     handleCreate,
     handleEdit,
     handleDelete,

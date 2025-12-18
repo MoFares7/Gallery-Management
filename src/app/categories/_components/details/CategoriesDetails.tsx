@@ -1,6 +1,6 @@
 "use client";
 import GalleryCard from "@/components/cards/GalleryCard";
-import { getCategoryColor, getCategoryIcon } from "@/constants";
+import { getCategoryColor } from "@/constants";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import {
   Alert,
@@ -14,8 +14,10 @@ import {
   Typography,
 } from "@mui/material";
 import { useCategoriesDetails } from "../../_hooks/useCategoriesDetails";
+import { useRouter } from "next/navigation";
 
 export default function CategoriesDetails() {
+  const router = useRouter();
   const { category, isLoading, error, categoryImages, handleBack } =
     useCategoriesDetails();
 
@@ -97,18 +99,32 @@ export default function CategoriesDetails() {
                 backgroundColor: getCategoryColor(category.id),
                 color: "white",
                 borderRadius: 3,
+                overflow: "hidden",
               }}
             >
-              <Typography
-                variant="h1"
-                sx={{
-                  fontWeight: 700,
-                  fontSize: "4rem",
-                  textShadow: "0 2px 4px rgba(0,0,0,0.2)",
-                }}
-              >
-                {getCategoryIcon(category.name)}
-              </Typography>
+              {category?.image ? (
+                <Box
+                  component="img"
+                  src={category?.image}
+                  alt={category?.name}
+                  sx={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                  }}
+                />
+              ) : (
+                <Typography
+                  variant="h1"
+                  sx={{
+                    fontWeight: 700,
+                    fontSize: "4rem",
+                    textShadow: "0 2px 4px rgba(0,0,0,0.2)",
+                  }}
+                >
+                  {category.name.charAt(0).toUpperCase()}
+                </Typography>
+              )}
             </Paper>
             <Box sx={{ flex: 1 }}>
               <Typography
@@ -116,13 +132,11 @@ export default function CategoriesDetails() {
                 component="h1"
                 sx={{ fontWeight: 700, mb: 1 }}
               >
-                {category.name}
+                {category?.name}
               </Typography>
-              {category.description && (
-                <Typography variant="body1" color="text.secondary">
-                  {category.description}
-                </Typography>
-              )}
+              <Typography variant="body1" color="text.secondary">
+                {category?.description}
+              </Typography>
             </Box>
           </Box>
 
