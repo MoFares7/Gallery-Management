@@ -4,7 +4,11 @@ import {
   useGetCategories,
   useUpdateCategory,
 } from "@/services/category.service";
-import { Category } from "@/types/category";
+import {
+  Category,
+  UpdateCategoryDto,
+  CreateCategoryDto,
+} from "@/types/category";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -40,10 +44,10 @@ export const useCategoriesHome = () => {
     router.push(`/categories/${category.id}`);
   };
 
-  const handleFormSubmit = (data: { name: string; description?: string }) => {
+  const handleFormSubmit = (data: CreateCategoryDto | UpdateCategoryDto) => {
     if (selectedCategory) {
       updateMutation.mutate(
-        { id: selectedCategory.id, data },
+        { id: selectedCategory.id, data: data as UpdateCategoryDto },
         {
           onSuccess: () => {
             setFormOpen(false);
@@ -52,7 +56,7 @@ export const useCategoriesHome = () => {
         }
       );
     } else {
-      createMutation.mutate(data, {
+      createMutation.mutate(data as CreateCategoryDto, {
         onSuccess: () => {
           setFormOpen(false);
         },

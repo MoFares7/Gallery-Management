@@ -1,11 +1,10 @@
-import { getCategoryColor, getCategoryIcon } from "@/constants";
-import { useGetCategories } from "@/services/category.service";
+import CategoryCard from "@/components/cards/CategoryCard";
 import PrimaryCard from "@/components/cards/PrimaryCard";
-import { Paper, Tooltip, Typography, Box } from "@mui/material";
+import { useGetCategories } from "@/services/category.service";
+import { Typography } from "@mui/material";
 import Grid from "@mui/material/Grid";
 import { useRouter } from "next/navigation";
 import { useMemo } from "react";
-import CategoryCard from "@/components/cards/CategoryCard";
 
 export default function CategoriesSection() {
   const router = useRouter();
@@ -32,8 +31,10 @@ export default function CategoriesSection() {
       >
         {displayedCategories && displayedCategories?.length > 0 ? (
           displayedCategories?.map((category) => (
-            // @ts-expect-error MUI v7 Grid types don't include item prop but it works at runtime
-            <Grid item xs={6} sm={4} md={3} lg={2.4} key={category.id}>
+            <Grid
+              size={{ xs: 6, sm: 4, md: 3, lg: 2.2, xl: 2 }}
+              key={category.id}
+            >
               <CategoryCard
                 category={category}
                 onClick={() => handleView(category.id)}
@@ -41,9 +42,7 @@ export default function CategoriesSection() {
             </Grid>
           ))
         ) : (
-          // @ts-expect-error MUI v7 Grid types don't include item prop but it works at runtime
-
-          <Grid item xs={12}>
+          <Grid size={{ xs: 12 }}>
             <Typography variant="body2" color="text.secondary">
               No categories found.
             </Typography>

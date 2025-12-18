@@ -1,20 +1,19 @@
 "use client";
-import GalleryCard from "@/components/cards/GalleryCard";
+import SecondaryCard from "@/components/cards/SecondaryCard";
+import HandleStatusSection from "@/components/handles/HandleStateSection";
 import { getCategoryColor } from "@/constants";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import {
-  Alert,
   Box,
   Button,
-  CircularProgress,
   Container,
   Divider,
   Grid,
   Paper,
   Typography,
 } from "@mui/material";
-import { useCategoriesDetails } from "../../_hooks/useCategoriesDetails";
 import { useRouter } from "next/navigation";
+import { useCategoriesDetails } from "../../_hooks/useCategoriesDetails";
 
 export default function CategoriesDetails() {
   const router = useRouter();
@@ -22,36 +21,11 @@ export default function CategoriesDetails() {
     useCategoriesDetails();
 
   if (isLoading) {
-    return (
-      <Box
-        sx={{
-          minHeight: "100vh",
-          backgroundColor: "background.default",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <CircularProgress />
-      </Box>
-    );
+    return <HandleStatusSection type="loading" />;
   }
 
   if (error || !category) {
-    return (
-      <Box
-        sx={{
-          minHeight: "100vh",
-          backgroundColor: "background.default",
-        }}
-      >
-        <Container maxWidth="xl" sx={{ pt: 16, pb: 8 }}>
-          <Alert severity="error">
-            Failed to load category. Please try again.
-          </Alert>
-        </Container>
-      </Box>
-    );
+    return <HandleStatusSection type="error" />;
   }
 
   return (
@@ -147,7 +121,7 @@ export default function CategoriesDetails() {
               Statistics
             </Typography>
             <Grid container spacing={2}>
-              <Grid item xs={12} sm={6} md={4} key="total-images">
+              <Grid size={{ xs: 12, sm: 6, md: 4 }} key="total-images">
                 <Paper
                   elevation={1}
                   sx={{
@@ -175,9 +149,8 @@ export default function CategoriesDetails() {
             </Typography>
             <Grid container spacing={3}>
               {categoryImages.map((image) => (
-                // @ts-expect-error MUI v7 Grid types don't include item prop but it works at runtime
-                <Grid item xs={12} sm={6} md={4} key={image.id}>
-                  <GalleryCard
+                <Grid size={{ xs: 12, sm: 6, md: 4 }} key={image.id}>
+                  <SecondaryCard
                     image={image}
                     onClick={() => router.push(`/gallery/${image.id}`)}
                   />
@@ -187,21 +160,7 @@ export default function CategoriesDetails() {
           </Box>
         )}
 
-        {categoryImages.length === 0 && (
-          <Paper
-            elevation={1}
-            sx={{
-              p: 4,
-              textAlign: "center",
-              backgroundColor: "background.paper",
-              borderRadius: 3,
-            }}
-          >
-            <Typography variant="body1" color="text.secondary">
-              No images in this category yet.
-            </Typography>
-          </Paper>
-        )}
+        {categoryImages.length === 0 && <HandleStatusSection type="empty" />}
       </Container>
     </Box>
   );

@@ -1,13 +1,14 @@
-import GalleryCard from "@/components/cards/GalleryCard";
+import SecondaryCard from "@/components/cards/SecondaryCard";
 import PrimaryCard from "@/components/cards/PrimaryCard";
 import { useGetImages } from "@/services/image.service";
-import { Alert, Box, CircularProgress, Grid } from "@mui/material";
+import { Alert, Box, Grid } from "@mui/material";
 import { useRouter } from "next/navigation";
 import { useMemo } from "react";
+import HandleStatusSection from "@/components/handles/HandleStateSection";
 
 export default function GallerySection() {
   const router = useRouter();
-  const { data: images, isLoading } = useGetImages();
+  const { data: images, isLoading, error } = useGetImages();
 
   const displayedImages = useMemo(() => {
     if (!images) return [];
@@ -18,24 +19,22 @@ export default function GallerySection() {
     <PrimaryCard title="Image Gallery" href="/gallery">
       <Box>
         {isLoading ? (
-          <Box display="flex" justifyContent="center" p={4}>
-            <CircularProgress />
-          </Box>
+          <HandleStatusSection type="loading" />
+        ) : error ? (
+          <HandleStatusSection type="error" />
         ) : (
-          <Grid container spacing={2} sx={{ justifyContent: "center" }}>
+          <Grid container spacing={2}>
             {displayedImages && displayedImages.length > 0 ? (
               displayedImages?.map((image) => (
-                // @ts-expect-error MUI v7 Grid types don't include item prop but it works at runtime
-                <Grid item xs={12} sm={6} md={4} lg={3} key={image.id}>
-                  <GalleryCard
+                <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={image.id}>
+                  <SecondaryCard
                     image={image}
                     onClick={() => router.push(`/gallery/${image.id}`)}
                   />
                 </Grid>
               ))
             ) : (
-              // @ts-expect-error MUI v7 Grid types don't include item prop but it works at runtime
-              <Grid item xs={12}>
+              <Grid size={{ xs: 12 }}>
                 <Alert severity="info" sx={{ borderRadius: 2 }}>
                   No images found.
                 </Alert>

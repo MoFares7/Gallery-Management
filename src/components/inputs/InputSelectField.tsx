@@ -46,7 +46,7 @@ export default function InputSelectField({
         <MenuItem value="">
           <em>{emptyOptionLabel}</em>
         </MenuItem>
-        {options.map((option) => (
+        {options?.map((option) => (
           <MenuItem key={option.value} value={option.value}>
             {option.label}
           </MenuItem>

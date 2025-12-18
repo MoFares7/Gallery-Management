@@ -1,72 +1,26 @@
 "use client";
 import { useGalleryDetails } from "@/app/gallery/_hooks/useGalleryDetails";
+import HandleStatusSection from "@/components/handles/HandleStateSection";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import {
-  Alert,
   Box,
   Button,
   Chip,
-  CircularProgress,
   Container,
   Divider,
   Paper,
   Typography,
 } from "@mui/material";
-import dynamic from "next/dynamic";
-
-const ImageAnnotation = dynamic(
-  () => import("@/components/annotations/ImageAnnotation"),
-  {
-    ssr: false,
-    loading: () => (
-      <Box display="flex" justifyContent="center" p={4}>
-        <CircularProgress />
-      </Box>
-    ),
-  }
-);
 
 export default function GalleryDetails() {
-  const {
-    image,
-    isLoading,
-    error,
-    showAnnotation,
-    handleBack,
-    toggleAnnotation,
-  } = useGalleryDetails();
+  const { image, isLoading, error, handleBack } = useGalleryDetails();
 
   if (isLoading) {
-    return (
-      <Box
-        sx={{
-          minHeight: "100vh",
-          backgroundColor: "background.default",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <CircularProgress />
-      </Box>
-    );
+    return <HandleStatusSection type="loading" />;
   }
 
   if (error || !image) {
-    return (
-      <Box
-        sx={{
-          minHeight: "100vh",
-          backgroundColor: "background.default",
-        }}
-      >
-        <Container maxWidth="xl" sx={{ pt: 16, pb: 8 }}>
-          <Alert severity="error">
-            Failed to load image. Please try again.
-          </Alert>
-        </Container>
-      </Box>
-    );
+    return <HandleStatusSection type="error" />;
   }
 
   return (
@@ -192,31 +146,6 @@ export default function GalleryDetails() {
                 </Box>
               </Box>
             </Paper>
-          )}
-
-          <Button
-            variant="contained"
-            onClick={toggleAnnotation}
-            sx={{
-              mb: 3,
-              textTransform: "none",
-              borderRadius: 2,
-            }}
-          >
-            {showAnnotation ? "Hide" : "Show"} Annotations
-          </Button>
-
-          {showAnnotation && image && (
-            <Box
-              sx={{
-                mt: 3,
-                p: 3,
-                borderRadius: 2,
-                backgroundColor: "background.light",
-              }}
-            >
-              <ImageAnnotation image={image} />
-            </Box>
           )}
         </Paper>
       </Container>

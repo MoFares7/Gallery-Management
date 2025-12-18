@@ -13,9 +13,10 @@ import {
   Typography,
 } from "@mui/material";
 import { useGetCategories } from "@/services/category.service";
-import { useEffect, useState } from "react";
-import InputTextField from "@/components/inputs/InputTextField";
-import InputSelectField from "@/components/inputs/InputSelectField";
+import { Formik, Form, Field } from "formik";
+import * as Yup from "yup";
+import FormikInputTextField from "@/components/inputs/formik-input/FormikInputTextField";
+import FormikInputSelectField from "@/components/inputs/formik-input/FormikInputSelectField";
 
 interface GalleryFiltersProps {
   open: boolean;
@@ -24,168 +25,182 @@ interface GalleryFiltersProps {
   onFiltersChange: (filters: ImageFilters) => void;
 }
 
+const validationSchema = Yup.object({
+  name: Yup.string().optional(),
+  categoryId: Yup.number().optional(),
+  metadata: Yup.object({
+    size: Yup.string().optional(),
+    resolution: Yup.string().optional(),
+  }).optional(),
+});
+
+interface FormValues {
+  name: string;
+  categoryId: number | undefined;
+  metadata: {
+    size: string;
+    resolution: string;
+  };
+}
+
 export default function GalleryFilters({
   open,
   onClose,
   filters,
   onFiltersChange,
 }: GalleryFiltersProps) {
+  const initialValues: FormValues = {
+    name: filters.name ?? "",
+    categoryId: filters.categoryId,
+    metadata: {
+      size: filters.metadata?.size ?? "",
+      resolution: filters.metadata?.resolution ?? "",
+    },
+  };
   const { data: categories } = useGetCategories();
-  const [tempFilters, setTempFilters] = useState<ImageFilters>(filters);
 
-  useEffect(() => {
-    if (open) {
-      setTempFilters(filters);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [open]);
-
-  const handleFilterChange = (
-    key: keyof ImageFilters,
-    value: string | number | undefined
-  ) => {
-    setTempFilters({
-      ...tempFilters,
-      [key]: value || undefined,
-    });
-  };
-
-  const handleMetadataFilterChange = (
-    key: "size" | "resolution",
-    value: string | undefined
-  ) => {
-    setTempFilters({
-      ...tempFilters,
+  const handleSubmit = (values: FormValues) => {
+    const newFilters: ImageFilters = {
+      name: values.name || undefined,
+      categoryId: values.categoryId,
       metadata: {
-        ...tempFilters.metadata,
-        [key]: value || undefined,
+        size: values.metadata.size || undefined,
+        resolution: values.metadata.resolution || undefined,
       },
-    });
-  };
+    };
 
-  const handleClearFilters = () => {
-    setTempFilters({});
-  };
+    if (!newFilters.metadata?.size && !newFilters.metadata?.resolution) {
+      delete newFilters.metadata;
+    }
 
-  const handleSave = () => {
-    onFiltersChange(tempFilters);
+    onFiltersChange(newFilters);
     onClose();
   };
 
   const handleCancel = () => {
-    setTempFilters(filters);
     onClose();
   };
 
-  const hasActiveFilters =
-    !!tempFilters.name ||
-    !!tempFilters.categoryId ||
-    !!tempFilters.metadata?.size ||
-    !!tempFilters.metadata?.resolution;
-
-  const categoryOptions =
-    categories?.map((cat) => ({
-      value: cat.id,
-      label: cat.name,
-    })) || [];
-
   return (
-    <Dialog
-      open={open}
-      onClose={handleCancel}
-      maxWidth="sm"
-      fullWidth
-      PaperProps={{
-        sx: {
-          borderRadius: 2,
-        },
-      }}
-    >
-      <DialogTitle>
-        <Box sx={{ display: "flex", alignItems: "center" }}>
-          <FilterListIcon sx={{ mr: 1, color: "primary.main" }} />
-          <Typography variant="h6" sx={{ fontWeight: 600 }}>
-            Filters
-          </Typography>
-        </Box>
-      </DialogTitle>
+    <Dialog open={open} onClose={handleCancel} maxWidth="sm" fullWidth>
+      <Formik
+        initialValues={initialValues}
+        validationSchema={validationSchema}
+        onSubmit={handleSubmit}
+        enableReinitialize
+      >
+        {({ values, resetForm, isSubmitting }) => {
+          const hasActiveFilters =
+            !!values.name ||
+            !!values.categoryId ||
+            !!values.metadata.size ||
+            !!values.metadata.resolution;
 
-      <DialogContent>
-        <Stack spacing={3} sx={{ mt: 1 }}>
-          <InputTextField
-            label="Search by Name"
-            value={tempFilters.name}
-            onChange={(value) => handleFilterChange("name", value || undefined)}
-            size="small"
-          />
+          const handleClearFilters = () => {
+            resetForm({
+              values: {
+                name: "",
+                categoryId: undefined,
+                metadata: {
+                  size: "",
+                  resolution: "",
+                },
+              },
+            });
+          };
 
-          <InputSelectField
-            label="Category"
-            value={tempFilters.categoryId}
-            onChange={(value) =>
-              handleFilterChange(
-                "categoryId",
-                value ? Number(value) : undefined
-              )
-            }
-            options={categoryOptions}
-            emptyOptionLabel="All Categories"
-            size="small"
-          />
+          return (
+            <Form>
+              <DialogTitle>
+                <Box sx={{ display: "flex", alignItems: "center" }}>
+                  <FilterListIcon sx={{ mr: 1, color: "primary.main" }} />
+                  <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                    Filters
+                  </Typography>
+                </Box>
+              </DialogTitle>
 
-          <InputTextField
-            label="Size"
-            type="number"
-            value={tempFilters.metadata?.size}
-            onChange={(value) =>
-              handleMetadataFilterChange("size", value || undefined)
-            }
-            size="small"
-            placeholder="e.g., 2MB"
-          />
+              <DialogContent>
+                <Stack spacing={3} sx={{ mt: 1 }}>
+                  <Field
+                    component={FormikInputTextField}
+                    name="name"
+                    label="Search by Name"
+                    size="small"
+                    fullWidth
+                  />
+                  <Field
+                    component={FormikInputSelectField}
+                    name="categoryId"
+                    label="Category"
+                    size="small"
+                    options={
+                      categories?.map((cat) => ({
+                        value: cat.id,
+                        label: cat.name,
+                      })) || []
+                    }
+                    emptyOptionLabel="All Categories"
+                  />
+                  <Field
+                    component={FormikInputTextField}
+                    name="metadata.size"
+                    label="Size"
+                    type="number"
+                    size="small"
+                    fullWidth
+                    placeholder="e.g., 2MB"
+                  />
+                  <Field
+                    component={FormikInputTextField}
+                    name="metadata.resolution"
+                    label="Resolution"
+                    size="small"
+                    fullWidth
+                    placeholder="e.g., 1920x1080"
+                  />
+                </Stack>
 
-          <InputTextField
-            label="Resolution"
-            value={tempFilters.metadata?.resolution}
-            onChange={(value) =>
-              handleMetadataFilterChange("resolution", value || undefined)
-            }
-            size="small"
-            placeholder="e.g., 1920x1080"
-          />
-        </Stack>
+                {hasActiveFilters && (
+                  <Box sx={{ mt: 3 }}>
+                    <Button
+                      type="button"
+                      variant="outlined"
+                      onClick={handleClearFilters}
+                      startIcon={<ClearIcon />}
+                      fullWidth
+                      sx={{ textTransform: "none" }}
+                      disabled={isSubmitting}
+                    >
+                      Clear All Filters
+                    </Button>
+                  </Box>
+                )}
+              </DialogContent>
 
-        {hasActiveFilters && (
-          <Box sx={{ mt: 3 }}>
-            <Button
-              variant="outlined"
-              onClick={handleClearFilters}
-              startIcon={<ClearIcon />}
-              fullWidth
-              sx={{ textTransform: "none" }}
-            >
-              Clear All Filters
-            </Button>
-          </Box>
-        )}
-      </DialogContent>
-
-      <DialogActions sx={{ p: 2.5, pt: 1 }}>
-        <Button
-          onClick={handleCancel}
-          sx={{ textTransform: "none" }}
-          color="inherit"
-        >
-          Cancel
-        </Button>
-        <Button
-          onClick={handleSave}
-          variant="contained"
-          sx={{ textTransform: "none" }}
-        >
-          Save
-        </Button>
-      </DialogActions>
+              <DialogActions sx={{ p: 2.5, pt: 1 }}>
+                <Button
+                  type="button"
+                  onClick={handleCancel}
+                  sx={{ textTransform: "none" }}
+                  color="inherit"
+                  disabled={isSubmitting}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  type="submit"
+                  variant="contained"
+                  sx={{ textTransform: "none" }}
+                  disabled={isSubmitting}
+                >
+                  Save
+                </Button>
+              </DialogActions>
+            </Form>
+          );
+        }}
+      </Formik>
     </Dialog>
   );
 }

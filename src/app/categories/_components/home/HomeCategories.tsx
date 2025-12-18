@@ -2,9 +2,10 @@
 import CategoryCard from "@/components/cards/CategoryCard";
 import PageHeader from "@/components/header/PageHeader";
 import DeleteConfirmationDialog from "@/components/modals/DeleteConfirmationDialog";
-import { Alert, Box, CircularProgress, Container, Grid } from "@mui/material";
+import { Box, Container, Grid } from "@mui/material";
 import { useCategoriesHome } from "../../_hooks/useCategoriesHome";
 import AddEditCategory from "../add-edit/AddEditCategory";
+import HandleStatusSection from "@/components/handles/HandleStateSection";
 
 export default function HomeCategories() {
   const {
@@ -44,18 +45,17 @@ export default function HomeCategories() {
         />
 
         {isLoading ? (
-          <Box display="flex" justifyContent="center" p={4}>
-            <CircularProgress />
-          </Box>
+          <HandleStatusSection type="loading" />
         ) : error ? (
-          <Alert severity="error" sx={{ m: 2 }}>
-            Failed to load categories. Please try again.
-          </Alert>
+          <HandleStatusSection type="error" />
         ) : (
-          <Grid container spacing={3} sx={{ justifyContent: "center" }}>
+          <Grid container spacing={3}>
             {categories && categories.length > 0 ? (
               categories.map((category) => (
-                <Grid item xs={6} sm={4} md={3} lg={2.4} key={category.id}>
+                <Grid
+                  size={{ xs: 6, sm: 4, md: 3, lg: 2.2, xl: 2 }}
+                  key={category.id}
+                >
                   <CategoryCard
                     category={category}
                     onClick={() => handleView(category)}
@@ -66,10 +66,8 @@ export default function HomeCategories() {
                 </Grid>
               ))
             ) : (
-              <Grid item xs={12}>
-                <Alert severity="info" sx={{ borderRadius: 2 }}>
-                  No categories found. Create one to get started.
-                </Alert>
+              <Grid size={{ xs: 12 }}>
+                <HandleStatusSection type="empty" />
               </Grid>
             )}
           </Grid>

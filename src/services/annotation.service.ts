@@ -5,7 +5,6 @@ import {
   createAnnotation,
   deleteAnnotation,
   getAllAnnotations,
-  getAnnotationsByImageId,
   updateAnnotation,
 } from "../endpoints/annotation";
 
@@ -18,14 +17,6 @@ export const useAnnotations = () => {
   });
 };
 
-export const useAnnotationsByImageId = (imageId: number) => {
-  return useQuery({
-    queryKey: [ANNOTATIONS_QUERY_KEY, "image", imageId],
-    queryFn: () => getAnnotationsByImageId(imageId, {}),
-    enabled: !!imageId,
-  });
-};
-
 export const useCreateAnnotation = () => {
   const queryClient = useQueryClient();
 
@@ -35,6 +26,7 @@ export const useCreateAnnotation = () => {
       queryClient.invalidateQueries({
         queryKey: [ANNOTATIONS_QUERY_KEY, "image", variables.imageId],
       });
+      queryClient.invalidateQueries({ queryKey: [ANNOTATIONS_QUERY_KEY] });
       toast.success("Annotation created successfully");
     },
     onError: () => {

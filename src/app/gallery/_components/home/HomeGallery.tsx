@@ -1,12 +1,13 @@
 "use client";
-import GalleryCard from "@/components/cards/GalleryCard";
+import SecondaryCard from "@/components/cards/SecondaryCard";
 import PageHeader from "@/components/header/PageHeader";
-import ImageUpload from "@/app/gallery/_components/image-upload/ImageUpload";
+import AddEditImageGallary from "@/app/gallery/_components/add-edit/AddEditImageGallary";
 import DeleteConfirmationDialog from "@/components/modals/DeleteConfirmationDialog";
 import GalleryFilters from "@/app/gallery/_components/filter/GalleryFilters";
-import { Alert, Box, CircularProgress, Container, Grid } from "@mui/material";
+import { Box, Container, Grid } from "@mui/material";
 import { useState } from "react";
 import { useGalleryHome } from "../../_hooks/useGalleryHome";
+import HandleStatusSection from "@/components/handles/HandleStateSection";
 
 export default function HomeGallery() {
   const [filtersOpen, setFiltersOpen] = useState(false);
@@ -22,7 +23,7 @@ export default function HomeGallery() {
     filteredImages,
     isLoading,
     error,
-    // handleDelete,
+    handleDelete,
     handleView,
     handleConfirmDelete,
     handleUploadSubmit,
@@ -48,37 +49,31 @@ export default function HomeGallery() {
         />
 
         {isLoading ? (
-          <Box display="flex" justifyContent="center" p={4}>
-            <CircularProgress />
-          </Box>
+          <HandleStatusSection type="loading" />
         ) : error ? (
-          <Alert severity="error" sx={{ m: 2 }}>
-            Failed to load images. Please try again.
-          </Alert>
+          <HandleStatusSection type="error" />
         ) : (
-          <Grid container spacing={3} sx={{ justifyContent: "center" }}>
+          <Grid container spacing={3}>
             {filteredImages && filteredImages.length > 0 ? (
               filteredImages.map((image) => (
-                <Grid item xs={12} sm={6} md={4} lg={3} key={image.id}>
-                  <GalleryCard
+                <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={image.id}>
+                  <SecondaryCard
                     image={image}
                     onClick={() => handleView(image)}
+                    onClickDelete={() => handleDelete(image)}
+                    isAbleAction={true}
                   />
                 </Grid>
               ))
             ) : (
-              <Grid item xs={12}>
-                <Alert severity="info" sx={{ borderRadius: 2 }}>
-                  {filters && Object.keys(filters).length > 0
-                    ? "No images match the current filters."
-                    : "No images found. Upload one to get started."}
-                </Alert>
+              <Grid size={{ xs: 12 }}>
+                <HandleStatusSection type="empty" />
               </Grid>
             )}
           </Grid>
         )}
 
-        <ImageUpload
+        <AddEditImageGallary
           open={uploadOpen}
           onClose={() => setUploadOpen(false)}
           onSubmit={handleUploadSubmit}
