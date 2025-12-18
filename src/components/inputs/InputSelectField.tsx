@@ -1,10 +1,5 @@
-import {
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  SelectProps,
-} from "@mui/material";
+import { material } from "@/lib/material";
+import { SelectProps } from "@mui/material";
 
 interface SelectOption {
   value: string | number;
@@ -29,9 +24,9 @@ export default function InputSelectField({
   ...props
 }: InputSelectFieldProps) {
   return (
-    <FormControl fullWidth>
-      <InputLabel>{label}</InputLabel>
-      <Select
+    <material.FormControl fullWidth>
+      <material.InputLabel>{label}</material.InputLabel>
+      <material.Select
         {...props}
         value={value || ""}
         onChange={(e) =>
@@ -43,15 +38,15 @@ export default function InputSelectField({
         }
         label={label}
       >
-        <MenuItem value="">
+        <material.MenuItem value="">
           <em>{emptyOptionLabel}</em>
-        </MenuItem>
+        </material.MenuItem>
         {options?.map((option) => (
-          <MenuItem key={option.value} value={option.value}>
+          <material.MenuItem key={option.value} value={option.value}>
             {option.label}
-          </MenuItem>
+          </material.MenuItem>
         ))}
-      </Select>
-    </FormControl>
+      </material.Select>
+    </material.FormControl>
   );
 }

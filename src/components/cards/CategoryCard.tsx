@@ -1,8 +1,7 @@
 import { getCategoryColor, getCategoryIcon } from "@/constants";
 import { Category } from "@/types/category";
-import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
-import { Box, IconButton, Paper, Tooltip, Typography } from "@mui/material";
+import { material } from "@/lib/material";
+import { materialIcons } from "@/lib/material-icons";
 import { useState } from "react";
 
 interface CategoryCardProps {
@@ -21,8 +20,8 @@ export default function CategoryCard({
 }: CategoryCardProps) {
   const [hoveredId, setHoveredId] = useState<number | null>(null);
   return (
-    <Tooltip title={category.description || category.name} arrow>
-      <Paper
+    <material.Tooltip title={category.description || category.name} arrow>
+      <material.Paper
         elevation={hoveredId === category.id ? 8 : 2}
         sx={{
           p: 3,
@@ -34,7 +33,7 @@ export default function CategoryCard({
           color: "white",
           position: "relative",
           minHeight: 140,
-          width: { xs: 320, sm: 220, md: 220, lg: 220 },
+          width: "100%",
           display: "flex",
           flexDirection: "column",
           justifyContent: "center",
@@ -47,7 +46,7 @@ export default function CategoryCard({
         onMouseLeave={() => setHoveredId(null)}
         onClick={onClick}
       >
-        <Box
+        <material.Box
           sx={{
             fontSize: "3rem",
             fontWeight: 700,
@@ -56,8 +55,8 @@ export default function CategoryCard({
           }}
         >
           {getCategoryIcon(category.name)}
-        </Box>
-        <Typography
+        </material.Box>
+        <material.Typography
           variant="body1"
           sx={{
             fontWeight: 600,
@@ -69,9 +68,9 @@ export default function CategoryCard({
           noWrap
         >
           {category.name}
-        </Typography>
+        </material.Typography>
         {hoveredId && isAbleAction && (
-          <Box
+          <material.Box
             sx={{
               position: "absolute",
               top: 8,
@@ -80,7 +79,7 @@ export default function CategoryCard({
               gap: 0.5,
             }}
           >
-            <IconButton
+            <material.IconButton
               size="small"
               onClick={(e) => {
                 e.stopPropagation();
@@ -92,9 +91,9 @@ export default function CategoryCard({
                 "&:hover": { bgcolor: "rgba(255,255,255,0.3)" },
               }}
             >
-              <EditIcon fontSize="small" />
-            </IconButton>
-            <IconButton
+              <materialIcons.edit fontSize="small" />
+            </material.IconButton>
+            <material.IconButton
               size="small"
               onClick={(e) => {
                 e.stopPropagation();
@@ -106,11 +105,11 @@ export default function CategoryCard({
                 "&:hover": { bgcolor: "rgba(255,255,255,0.3)" },
               }}
             >
-              <DeleteIcon fontSize="small" />
-            </IconButton>
-          </Box>
+              <materialIcons.delete fontSize="small" />
+            </material.IconButton>
+          </material.Box>
         )}
-      </Paper>
-    </Tooltip>
+      </material.Paper>
+    </material.Tooltip>
   );
 }

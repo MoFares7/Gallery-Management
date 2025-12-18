@@ -1,4 +1,4 @@
-import { Button, CircularProgress } from "@mui/material";
+import { material } from "@/lib/material";
 
 interface PrimaryButtonProps {
   onClick: () => void;
@@ -21,7 +21,7 @@ export default function PrimaryButton({
   hoverBackgroundColor = "error.dark",
 }: PrimaryButtonProps) {
   return (
-    <Button
+    <material.Button
       variant={variant}
       startIcon={startIcon}
       onClick={onClick}
@@ -31,13 +31,17 @@ export default function PrimaryButton({
         backgroundColor: backgroundColor,
         borderRadius: 1,
         textTransform: "none",
-        boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+        BoxShadow: "0 2px 8px rgba(0,0,0,0.15)",
         "&:hover": {
           backgroundColor: hoverBackgroundColor,
         },
       }}
     >
-      {loading ? <CircularProgress size={16} color="inherit" /> : buttonText}
-    </Button>
+      {loading ? (
+        <material.CircularProgress size={16} color="inherit" />
+      ) : (
+        buttonText
+      )}
+    </material.Button>
   );
 }

@@ -1,5 +1,5 @@
-import { Box, Button, Typography } from "@mui/material";
-import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import { material } from "@/lib/material";
+import { materialIcons } from "@/lib/material-icons";
 import { useRouter } from "next/navigation";
 
 interface PrimaryCardProps {
@@ -15,7 +15,7 @@ export default function PrimaryCard({
 }: PrimaryCardProps) {
   const router = useRouter();
   return (
-    <Box
+    <material.Box
       sx={{
         p: 4,
         borderRadius: 3,
@@ -26,7 +26,7 @@ export default function PrimaryCard({
         scrollMarginTop: "80px",
       }}
     >
-      <Box
+      <material.Box
         sx={{
           display: "flex",
           justifyContent: "space-between",
@@ -34,16 +34,16 @@ export default function PrimaryCard({
           mb: 4,
         }}
       >
-        <Typography
+        <material.Typography
           variant="h4"
           component="h2"
           sx={{ fontWeight: 600, color: "text.primary" }}
         >
           {title}
-        </Typography>
-        <Button
+        </material.Typography>
+        <material.Button
           variant="outlined"
-          endIcon={<ArrowForwardIcon />}
+          endIcon={<materialIcons.arrowForward />}
           onClick={() => router.push(href)}
           sx={{
             textTransform: "none",
@@ -57,9 +57,9 @@ export default function PrimaryCard({
           }}
         >
           View All
-        </Button>
-      </Box>
+        </material.Button>
+      </material.Box>
       {children}
-    </Box>
+    </material.Box>
   );
 }

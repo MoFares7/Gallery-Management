@@ -2,7 +2,7 @@
 import CategoryCard from "@/components/cards/CategoryCard";
 import PageHeader from "@/components/header/PageHeader";
 import DeleteConfirmationDialog from "@/components/modals/DeleteConfirmationDialog";
-import { Box, Container, Grid } from "@mui/material";
+import { material } from "@/lib/material";
 import { useCategoriesHome } from "../../_hooks/useCategoriesHome";
 import AddEditCategory from "../add-edit/AddEditCategory";
 import HandleStatusSection from "@/components/handles/HandleStateSection";
@@ -30,14 +30,14 @@ export default function HomeCategories() {
   } = useCategoriesHome();
 
   return (
-    <Box
+    <material.Box
       sx={{
         minHeight: "100vh",
         backgroundColor: "background.default",
         background: "background.gradient",
       }}
     >
-      <Container maxWidth="xl" sx={{ pt: 16, pb: 8 }}>
+      <material.Container maxWidth="xl" sx={{ pt: 16, pb: 8 }}>
         <PageHeader
           title="Categories"
           buttonText="Create Category"
@@ -49,10 +49,10 @@ export default function HomeCategories() {
         ) : error ? (
           <HandleStatusSection type="error" />
         ) : (
-          <Grid container spacing={3}>
+          <material.Grid container spacing={3}>
             {categories && categories.length > 0 ? (
               categories.map((category) => (
-                <Grid
+                <material.Grid
                   size={{ xs: 6, sm: 4, md: 3, lg: 2.2, xl: 2 }}
                   key={category.id}
                 >
@@ -63,14 +63,14 @@ export default function HomeCategories() {
                     onClickDelete={() => handleDelete(category)}
                     isAbleAction={true}
                   />
-                </Grid>
+                </material.Grid>
               ))
             ) : (
-              <Grid size={{ xs: 12 }}>
+              <material.Grid size={{ xs: 12 }}>
                 <HandleStatusSection type="empty" />
-              </Grid>
+              </material.Grid>
             )}
-          </Grid>
+          </material.Grid>
         )}
 
         <AddEditCategory
@@ -95,7 +95,7 @@ export default function HomeCategories() {
           message={`Are you sure you want to delete "${selectedCategory?.name}"? This action cannot be undone.`}
           isLoading={deleteMutation.isPending}
         />
-      </Container>
-    </Box>
+      </material.Container>
+    </material.Box>
   );
 }

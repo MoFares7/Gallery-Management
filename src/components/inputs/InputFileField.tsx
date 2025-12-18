@@ -1,4 +1,4 @@
-import { Box, Button } from "@mui/material";
+import { material } from "@/lib/material";
 import { useFormikContext } from "formik";
 import { useRef } from "react";
 
@@ -30,7 +30,7 @@ export default function InputFileField() {
 
   return (
     <>
-      <Button
+      <material.Button
         variant="outlined"
         component="label"
         fullWidth
@@ -49,11 +49,11 @@ export default function InputFileField() {
           accept="image/*"
           onChange={handleFileChange}
         />
-      </Button>
+      </material.Button>
       {hasError && (
-        <Box sx={{ color: "error.main", fontSize: "0.75rem", mt: -1 }}>
+        <material.Box sx={{ color: "error.main", fontSize: "0.75rem", mt: -1 }}>
           {errors.file}
-        </Box>
+        </material.Box>
       )}
     </>
   );

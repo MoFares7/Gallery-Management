@@ -1,25 +1,12 @@
 "use client";
 
-import { useGetCategories } from "@/services/category.service";
-import { CreateImageDto } from "@/types/image";
-import {
-  Box,
-  Button,
-  CircularProgress,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-} from "@mui/material";
-import { Formik, Form, useFormikContext, Field } from "formik";
-import * as Yup from "yup";
-import InputSelectField from "@/components/inputs/InputSelectField";
 import InputFileField from "@/components/inputs/InputFileField";
 import FormikInputSelectField from "@/components/inputs/formik-input/FormikInputSelectField";
+import { material } from "@/lib/material";
+import { useGetCategories } from "@/services/category.service";
+import { CreateImageDto } from "@/types/image";
+import { Field, Form, Formik } from "formik";
+import { imageGalleryValidationSchema } from "../../_validation";
 
 interface AddEditImageGallaryProps {
   open: boolean;
@@ -27,18 +14,6 @@ interface AddEditImageGallaryProps {
   onSubmit: (data: CreateImageDto) => void;
   isLoading?: boolean;
 }
-
-const validationSchema = Yup.object({
-  file: Yup.mixed<File>()
-    .required("Image file is required")
-    .test("fileType", "Only image files are allowed", (value) => {
-      if (!value) return false;
-      return value instanceof File && value.type.startsWith("image/");
-    }),
-  name: Yup.string().required("Image name is required"),
-  url: Yup.string().required("Image URL is required"),
-  categoryId: Yup.number().optional(),
-});
 
 interface FormValues {
   file: File | null;
@@ -112,18 +87,18 @@ export default function AddEditImageGallary({
   };
 
   return (
-    <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
+    <material.Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
       <Formik
         initialValues={initialValues}
-        validationSchema={validationSchema}
+        validationSchema={imageGalleryValidationSchema}
         onSubmit={handleSubmit}
         enableReinitialize
       >
         {({ isSubmitting, resetForm, values }) => (
           <Form>
-            <DialogTitle>Upload Image</DialogTitle>
-            <DialogContent>
-              <Box
+            <material.DialogTitle>Upload Image</material.DialogTitle>
+            <material.DialogContent>
+              <material.Box
                 sx={{ display: "flex", flexDirection: "column", gap: 2, pt: 1 }}
               >
                 <Field
@@ -135,7 +110,7 @@ export default function AddEditImageGallary({
                 />
 
                 {values.url && (
-                  <Box
+                  <material.Box
                     component="img"
                     src={values.url}
                     alt="Preview"
@@ -161,11 +136,11 @@ export default function AddEditImageGallary({
                     })) || []
                   }
                 />
-              </Box>
-            </DialogContent>
+              </material.Box>
+            </material.DialogContent>
 
-            <DialogActions>
-              <Button
+            <material.DialogActions>
+              <material.Button
                 onClick={() => {
                   resetForm();
                   handleClose();
@@ -173,8 +148,8 @@ export default function AddEditImageGallary({
                 disabled={isLoading || isSubmitting}
               >
                 Cancel
-              </Button>
-              <Button
+              </material.Button>
+              <material.Button
                 type="submit"
                 variant="contained"
                 disabled={
@@ -185,15 +160,17 @@ export default function AddEditImageGallary({
                   !values.file
                 }
                 startIcon={
-                  isLoading ? <CircularProgress size={16} /> : undefined
+                  isLoading ? (
+                    <material.CircularProgress size={16} />
+                  ) : undefined
                 }
               >
                 Upload
-              </Button>
-            </DialogActions>
+              </material.Button>
+            </material.DialogActions>
           </Form>
         )}
       </Formik>
-    </Dialog>
+    </material.Dialog>
   );
 }

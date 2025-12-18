@@ -4,7 +4,7 @@ import PageHeader from "@/components/header/PageHeader";
 import AddEditImageGallary from "@/app/gallery/_components/add-edit/AddEditImageGallary";
 import DeleteConfirmationDialog from "@/components/modals/DeleteConfirmationDialog";
 import GalleryFilters from "@/app/gallery/_components/filter/GalleryFilters";
-import { Box, Container, Grid } from "@mui/material";
+import { material } from "@/lib/material";
 import { useState } from "react";
 import { useGalleryHome } from "../../_hooks/useGalleryHome";
 import HandleStatusSection from "@/components/handles/HandleStateSection";
@@ -32,14 +32,14 @@ export default function HomeGallery() {
   } = useGalleryHome();
 
   return (
-    <Box
+    <material.Box
       sx={{
         minHeight: "100vh",
         backgroundColor: "background.default",
         background: "background.gradient",
       }}
     >
-      <Container maxWidth="xl" sx={{ pt: 16, pb: 8 }}>
+      <material.Container maxWidth="xl" sx={{ pt: 16, pb: 8 }}>
         <PageHeader
           title="Image Gallery"
           buttonText="Upload Image"
@@ -53,24 +53,27 @@ export default function HomeGallery() {
         ) : error ? (
           <HandleStatusSection type="error" />
         ) : (
-          <Grid container spacing={3}>
+          <material.Grid container spacing={3}>
             {filteredImages && filteredImages.length > 0 ? (
               filteredImages.map((image) => (
-                <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={image.id}>
+                <material.Grid
+                  size={{ xs: 12, sm: 6, md: 4, lg: 3 }}
+                  key={image.id}
+                >
                   <SecondaryCard
                     image={image}
                     onClick={() => handleView(image)}
                     onClickDelete={() => handleDelete(image)}
                     isAbleAction={true}
                   />
-                </Grid>
+                </material.Grid>
               ))
             ) : (
-              <Grid size={{ xs: 12 }}>
+              <material.Grid size={{ xs: 12 }}>
                 <HandleStatusSection type="empty" />
-              </Grid>
+              </material.Grid>
             )}
-          </Grid>
+          </material.Grid>
         )}
 
         <AddEditImageGallary
@@ -98,7 +101,7 @@ export default function HomeGallery() {
           filters={filters}
           onFiltersChange={setFilters}
         />
-      </Container>
-    </Box>
+      </material.Container>
+    </material.Box>
   );
 }

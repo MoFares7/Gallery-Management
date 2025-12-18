@@ -1,6 +1,5 @@
-import { Box, Button, Typography } from "@mui/material";
-import AddIcon from "@mui/icons-material/Add";
-import FilterListIcon from "@mui/icons-material/FilterList";
+import { material } from "@/lib/material";
+import { materialIcons } from "@/lib/material-icons";
 import PrimaryButton from "../buttons/PrimaryButton";
 
 interface PageHeaderProps {
@@ -18,7 +17,7 @@ export default function PageHeader({
   onFiltersClick,
 }: PageHeaderProps) {
   return (
-    <Box
+    <material.Box
       sx={{
         mb: 4,
         display: "flex",
@@ -33,23 +32,23 @@ export default function PageHeader({
         borderColor: "background.light",
       }}
     >
-      <Typography
+      <material.Typography
         variant="h3"
         component="h1"
         sx={{ fontWeight: 700, color: "text.primary" }}
       >
         {title}
-      </Typography>
-      <Box sx={{ display: "flex", gap: 2 }}>
+      </material.Typography>
+      <material.Box sx={{ display: "flex", gap: 2 }}>
         <PrimaryButton
           onClick={onClick}
           buttonText={buttonText}
-          startIcon={<AddIcon />}
+          startIcon={<materialIcons.add />}
         />
         {isHasFilters && (
-          <Button
+          <material.Button
             variant="outlined"
-            startIcon={<FilterListIcon />}
+            startIcon={<materialIcons.filterList />}
             onClick={onFiltersClick}
             sx={{
               borderColor: "error.main",
@@ -64,9 +63,9 @@ export default function PageHeader({
             }}
           >
             Filters
-          </Button>
+          </material.Button>
         )}
-      </Box>
-    </Box>
+      </material.Box>
+    </material.Box>
   );
 }

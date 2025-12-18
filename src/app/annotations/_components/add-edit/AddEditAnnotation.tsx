@@ -3,16 +3,7 @@
 import HandleStatusSection from "@/components/handles/HandleStateSection";
 import { Annotation } from "@/types/annotation";
 import { Image } from "@/types/image";
-import {
-  Box,
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Paper,
-  Tooltip,
-} from "@mui/material";
+import { material } from "@/lib/material";
 import { Image as KonvaImage, Layer, Rect, Stage } from "react-konva";
 import { useAddEditAnnotation } from "../../_hooks/useAddEditAnnotation";
 
@@ -40,7 +31,7 @@ export default function AddEditAnnotation({
     isSaving,
     editingAnnotationId,
     stageSize,
-    containerRef,
+    ContainerRef,
     annotations,
     isLoading,
     konvaImage,
@@ -52,8 +43,8 @@ export default function AddEditAnnotation({
   } = useAddEditAnnotation(image, annotationToEdit, onClose, isModal);
 
   const content = (
-    <Box>
-      <Paper
+    <material.Box>
+      <material.Paper
         elevation={1}
         sx={{
           p: 2,
@@ -61,22 +52,26 @@ export default function AddEditAnnotation({
           backgroundColor: "background.light",
         }}
       >
-        <Box sx={{ mb: 2 }}>
-          <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 2 }}>
-            <Box>
-              <Button
+        <material.Box sx={{ mb: 2 }}>
+          <material.Box
+            sx={{ display: "flex", alignItems: "center", gap: 2, mb: 2 }}
+          >
+            <material.Box>
+              <material.Button
                 variant="contained"
                 size="small"
                 sx={{ textTransform: "none" }}
                 onClick={() => setIsDrawingMode(!isDrawingMode)}
               >
                 {isDrawingMode ? "Drawing Mode Active" : "Start Drawing"}
-              </Button>
-            </Box>
-            <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
+              </material.Button>
+            </material.Box>
+            <material.Box
+              sx={{ display: "flex", gap: 1, alignItems: "center" }}
+            >
               {COLORS.map((color) => (
-                <Tooltip key={color} title={color}>
-                  <Box
+                <material.Tooltip key={color} title={color}>
+                  <material.Box
                     onClick={() => setSelectedColor(color)}
                     sx={{
                       width: 32,
@@ -94,14 +89,14 @@ export default function AddEditAnnotation({
                       },
                     }}
                   />
-                </Tooltip>
+                </material.Tooltip>
               ))}
-            </Box>
-          </Box>
-        </Box>
+            </material.Box>
+          </material.Box>
+        </material.Box>
 
-        <Box
-          ref={containerRef}
+        <material.Box
+          ref={ContainerRef}
           sx={{
             width: "100%",
             display: "flex",
@@ -165,9 +160,9 @@ export default function AddEditAnnotation({
               </Layer>
             </Stage>
           )}
-        </Box>
-      </Paper>
-    </Box>
+        </material.Box>
+      </material.Paper>
+    </material.Box>
   );
 
   if (isLoading) {
@@ -176,17 +171,17 @@ export default function AddEditAnnotation({
 
   if (isModal) {
     return (
-      <Dialog open={true} onClose={onClose} maxWidth="lg" fullWidth>
-        <DialogTitle>
+      <material.Dialog open={true} onClose={onClose} maxWidth="lg" fullWidth>
+        <material.DialogTitle>
           {editingAnnotationId ? "Edit Annotation" : "Create Annotation"}
-        </DialogTitle>
-        <DialogContent>{content}</DialogContent>
-        <DialogActions>
-          <Button onClick={onClose} disabled={isSaving}>
+        </material.DialogTitle>
+        <material.DialogContent>{content}</material.DialogContent>
+        <material.DialogActions>
+          <material.Button onClick={onClose} disabled={isSaving}>
             Close
-          </Button>
-        </DialogActions>
-      </Dialog>
+          </material.Button>
+        </material.DialogActions>
+      </material.Dialog>
     );
   }
   return content;

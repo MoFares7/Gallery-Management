@@ -1,4 +1,5 @@
-import { Box, Typography } from "@mui/material";
+"use client";
+import { material } from "@/lib/material";
 import Lottie from "lottie-react";
 import error from "../../../public/lotties/error.json";
 import empty from "../../../public/lotties/empty.json";
@@ -11,7 +12,7 @@ export default function HandleStatusSection({
   type,
 }: HandleStatusSectionProps) {
   return (
-    <Box
+    <material.Box
       sx={{
         display: "flex",
         flexDirection: "column",
@@ -29,12 +30,12 @@ export default function HandleStatusSection({
         style={{ alignItems: "center", width: 200, height: 200 }}
       />
       {type !== "loading" && (
-        <Typography variant="body2" sx={{ textAlign: "center" }}>
+        <material.Typography variant="body2" sx={{ textAlign: "center" }}>
           {type === "error"
             ? "Error occurred, Please retry again"
             : "No data found, Please try again later"}
-        </Typography>
+        </material.Typography>
       )}
-    </Box>
+    </material.Box>
   );
 }

@@ -47,7 +47,7 @@ export const useAddEditAnnotation = (
   );
   const [stageSize, setStageSize] = useState({ width: 800, height: 600 });
   const [imageScale, setImageScale] = useState(1);
-  const containerRef = useRef<HTMLDivElement>(null);
+  const ContainerRef = useRef<HTMLDivElement>(null);
 
   // Don't fetch annotations by image ID - only use selected annotation if editing
   const annotations = useMemo(() => {
@@ -88,9 +88,9 @@ export const useAddEditAnnotation = (
     if (!konvaImage) return;
 
     const updateSize = () => {
-      if (containerRef.current) {
-        const containerWidth = containerRef.current.clientWidth;
-        const maxWidth = Math.min(containerWidth, konvaImage.width);
+      if (ContainerRef.current) {
+        const ContainerWidth = ContainerRef.current.clientWidth;
+        const maxWidth = Math.min(ContainerWidth, konvaImage.width);
         const scale = maxWidth / konvaImage.width;
         const height = konvaImage.height * scale;
 
@@ -282,7 +282,7 @@ export const useAddEditAnnotation = (
     isSaving,
     editingAnnotationId,
     stageSize,
-    containerRef,
+    ContainerRef,
     annotations,
     isLoading: false, // No loading state since we're not fetching
     konvaImage,

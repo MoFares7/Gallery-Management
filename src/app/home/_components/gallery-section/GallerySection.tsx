@@ -1,7 +1,7 @@
 import SecondaryCard from "@/components/cards/SecondaryCard";
 import PrimaryCard from "@/components/cards/PrimaryCard";
 import { useGetImages } from "@/services/image.service";
-import { Alert, Box, Grid } from "@mui/material";
+import { material } from "@/lib/material";
 import { useRouter } from "next/navigation";
 import { useMemo } from "react";
 import HandleStatusSection from "@/components/handles/HandleStateSection";
@@ -17,32 +17,31 @@ export default function GallerySection() {
 
   return (
     <PrimaryCard title="Image Gallery" href="/gallery">
-      <Box>
+      <material.Box>
         {isLoading ? (
           <HandleStatusSection type="loading" />
         ) : error ? (
           <HandleStatusSection type="error" />
         ) : (
-          <Grid container spacing={2}>
+          <material.Grid container spacing={2}>
             {displayedImages && displayedImages.length > 0 ? (
               displayedImages?.map((image) => (
-                <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={image.id}>
+                <material.Grid
+                  size={{ xs: 12, sm: 6, md: 4, lg: 3 }}
+                  key={image.id}
+                >
                   <SecondaryCard
                     image={image}
                     onClick={() => router.push(`/gallery/${image.id}`)}
                   />
-                </Grid>
+                </material.Grid>
               ))
             ) : (
-              <Grid size={{ xs: 12 }}>
-                <Alert severity="info" sx={{ borderRadius: 2 }}>
-                  No images found.
-                </Alert>
-              </Grid>
+              <HandleStatusSection type="empty" />
             )}
-          </Grid>
+          </material.Grid>
         )}
-      </Box>
+      </material.Box>
     </PrimaryCard>
   );
 }

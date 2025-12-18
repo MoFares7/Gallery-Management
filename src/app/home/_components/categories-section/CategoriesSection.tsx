@@ -1,14 +1,14 @@
 import CategoryCard from "@/components/cards/CategoryCard";
 import PrimaryCard from "@/components/cards/PrimaryCard";
 import { useGetCategories } from "@/services/category.service";
-import { Typography } from "@mui/material";
-import Grid from "@mui/material/Grid";
+import { material } from "@/lib/material";
 import { useRouter } from "next/navigation";
 import { useMemo } from "react";
+import HandleStatusSection from "@/components/handles/HandleStateSection";
 
 export default function CategoriesSection() {
   const router = useRouter();
-  const { data: categories } = useGetCategories();
+  const { data: categories, isLoading, error } = useGetCategories();
 
   const displayedCategories = useMemo(() => {
     if (!categories) return [];
@@ -19,36 +19,33 @@ export default function CategoriesSection() {
     router.push(`/categories/${categoryId}`);
   };
 
+  if (isLoading) {
+    return <HandleStatusSection type="loading" />;
+  }
+
+  if (error) {
+    return <HandleStatusSection type="error" />;
+  }
+
   return (
     <PrimaryCard title="Categories" href="/categories">
-      <Grid
-        container
-        spacing={2}
-        sx={{
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
+      <material.Grid container spacing={2} sx={{ justifyContent: "center" }}>
         {displayedCategories && displayedCategories?.length > 0 ? (
           displayedCategories?.map((category) => (
-            <Grid
-              size={{ xs: 6, sm: 4, md: 3, lg: 2.2, xl: 2 }}
+            <material.Grid
+              size={{ xs: 6, sm: 4, md: 3, lg: 2.4, xl: 2 }}
               key={category.id}
             >
               <CategoryCard
                 category={category}
                 onClick={() => handleView(category.id)}
               />
-            </Grid>
+            </material.Grid>
           ))
         ) : (
-          <Grid size={{ xs: 12 }}>
-            <Typography variant="body2" color="text.secondary">
-              No categories found.
-            </Typography>
-          </Grid>
+          <HandleStatusSection type="empty" />
         )}
-      </Grid>
+      </material.Grid>
     </PrimaryCard>
   );
 }

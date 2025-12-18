@@ -1,15 +1,6 @@
 "use client";
 
-import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogContentText,
-  DialogActions,
-  Button,
-  CircularProgress,
-  Box,
-} from "@mui/material";
+import { material } from "@/lib/material";
 import PrimaryButton from "../buttons/PrimaryButton";
 
 interface DeleteConfirmationDialogProps {
@@ -30,12 +21,12 @@ export default function DeleteConfirmationDialog({
   isLoading = false,
 }: DeleteConfirmationDialogProps) {
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-      <DialogTitle>{title}</DialogTitle>
-      <DialogContent>
-        <DialogContentText>{message}</DialogContentText>
-      </DialogContent>
-      <DialogActions sx={{ px: 2, pb: 2 }}>
+    <material.Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
+      <material.DialogTitle>{title}</material.DialogTitle>
+      <material.DialogContent>
+        <material.DialogContentText>{message}</material.DialogContentText>
+      </material.DialogContent>
+      <material.DialogActions sx={{ px: 2, pb: 2 }}>
         <PrimaryButton
           variant="outlined"
           onClick={onClose}
@@ -50,7 +41,7 @@ export default function DeleteConfirmationDialog({
           loading={isLoading}
           disabled={isLoading}
         />
-      </DialogActions>
-    </Dialog>
+      </material.DialogActions>
+    </material.Dialog>
   );
 }

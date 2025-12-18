@@ -1,17 +1,7 @@
 "use client";
 import { type ImageFilters } from "@/types/image";
-import ClearIcon from "@mui/icons-material/Clear";
-import FilterListIcon from "@mui/icons-material/FilterList";
-import {
-  Box,
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Stack,
-  Typography,
-} from "@mui/material";
+import { materialIcons } from "@/lib/material-icons";
+import { material } from "@/lib/material";
 import { useGetCategories } from "@/services/category.service";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
@@ -82,7 +72,7 @@ export default function GalleryFilters({
   };
 
   return (
-    <Dialog open={open} onClose={handleCancel} maxWidth="sm" fullWidth>
+    <material.Dialog open={open} onClose={handleCancel} maxWidth="sm" fullWidth>
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}
@@ -111,17 +101,19 @@ export default function GalleryFilters({
 
           return (
             <Form>
-              <DialogTitle>
-                <Box sx={{ display: "flex", alignItems: "center" }}>
-                  <FilterListIcon sx={{ mr: 1, color: "primary.main" }} />
-                  <Typography variant="h6" sx={{ fontWeight: 600 }}>
+              <material.DialogTitle>
+                <material.Box sx={{ display: "flex", alignItems: "center" }}>
+                  <materialIcons.filterList
+                    sx={{ mr: 1, color: "primary.main" }}
+                  />
+                  <material.Typography variant="h6" sx={{ fontWeight: 600 }}>
                     Filters
-                  </Typography>
-                </Box>
-              </DialogTitle>
+                  </material.Typography>
+                </material.Box>
+              </material.DialogTitle>
 
-              <DialogContent>
-                <Stack spacing={3} sx={{ mt: 1 }}>
+              <material.DialogContent>
+                <material.Stack spacing={3} sx={{ mt: 1 }}>
                   <Field
                     component={FormikInputTextField}
                     name="name"
@@ -159,27 +151,27 @@ export default function GalleryFilters({
                     fullWidth
                     placeholder="e.g., 1920x1080"
                   />
-                </Stack>
+                </material.Stack>
 
                 {hasActiveFilters && (
-                  <Box sx={{ mt: 3 }}>
-                    <Button
+                  <material.Box sx={{ mt: 3 }}>
+                    <material.Button
                       type="button"
                       variant="outlined"
                       onClick={handleClearFilters}
-                      startIcon={<ClearIcon />}
+                      startIcon={<materialIcons.clear />}
                       fullWidth
                       sx={{ textTransform: "none" }}
                       disabled={isSubmitting}
                     >
                       Clear All Filters
-                    </Button>
-                  </Box>
+                    </material.Button>
+                  </material.Box>
                 )}
-              </DialogContent>
+              </material.DialogContent>
 
-              <DialogActions sx={{ p: 2.5, pt: 1 }}>
-                <Button
+              <material.DialogActions sx={{ p: 2.5, pt: 1 }}>
+                <material.Button
                   type="button"
                   onClick={handleCancel}
                   sx={{ textTransform: "none" }}
@@ -187,20 +179,20 @@ export default function GalleryFilters({
                   disabled={isSubmitting}
                 >
                   Cancel
-                </Button>
-                <Button
+                </material.Button>
+                <material.Button
                   type="submit"
                   variant="contained"
                   sx={{ textTransform: "none" }}
                   disabled={isSubmitting}
                 >
                   Save
-                </Button>
-              </DialogActions>
+                </material.Button>
+              </material.DialogActions>
             </Form>
           );
         }}
       </Formik>
-    </Dialog>
+    </material.Dialog>
   );
 }

@@ -9,12 +9,9 @@ export interface Image {
   };
   metadata?: {
     size?: number;
-    width?: number;
-    height?: number;
     resolution?: string;
   };
-  createdAt?: string;
-  updatedAt?: string;
+  uploadDate: string;
 }
 
 export interface CreateImageDto {

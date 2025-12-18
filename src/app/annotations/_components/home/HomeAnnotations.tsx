@@ -4,16 +4,7 @@ import SecondaryCard from "@/components/cards/SecondaryCard";
 import PageHeader from "@/components/header/PageHeader";
 import DeleteConfirmationDialog from "@/components/modals/DeleteConfirmationDialog";
 import dynamic from "next/dynamic";
-import {
-  Box,
-  Container,
-  Grid,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Button,
-} from "@mui/material";
+import { material } from "@/lib/material";
 
 const AddEditAnnotation = dynamic(
   () => import("@/app/annotations/_components/add-edit/AddEditAnnotation"),
@@ -96,14 +87,14 @@ export default function HomeAnnotations() {
   };
 
   return (
-    <Box
+    <material.Box
       sx={{
         minHeight: "100vh",
         backgroundColor: "background.default",
         background: "background.gradient",
       }}
     >
-      <Container maxWidth="xl" sx={{ pt: 16, pb: 8 }}>
+      <material.Container maxWidth="xl" sx={{ pt: 16, pb: 8 }}>
         <PageHeader
           title="Annotations"
           buttonText="Create Annotation"
@@ -115,7 +106,11 @@ export default function HomeAnnotations() {
         ) : error ? (
           <HandleStatusSection type="error" />
         ) : (
-          <Grid container spacing={3} sx={{ justifyContent: "center" }}>
+          <material.Grid
+            container
+            spacing={3}
+            sx={{ justifyContent: "center" }}
+          >
             {annotationsByImage.size > 0 ? (
               Array.from(annotationsByImage.entries()).map(
                 ([imageId, imageAnnotations]) => {
@@ -124,7 +119,10 @@ export default function HomeAnnotations() {
                   const firstAnnotation = imageAnnotations[0];
 
                   return (
-                    <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={imageId}>
+                    <material.Grid
+                      size={{ xs: 12, sm: 6, md: 4, lg: 3 }}
+                      key={imageId}
+                    >
                       <SecondaryCard
                         image={image}
                         onClick={() => handleView(firstAnnotation)}
@@ -136,30 +134,32 @@ export default function HomeAnnotations() {
                         }}
                         isAbleAction={true}
                       />
-                    </Grid>
+                    </material.Grid>
                   );
                 }
               )
             ) : (
-              <Grid size={{ xs: 12 }}>
+              <material.Grid size={{ xs: 12 }}>
                 <HandleStatusSection type="empty" />
-              </Grid>
+              </material.Grid>
             )}
-          </Grid>
+          </material.Grid>
         )}
 
-        <Dialog
+        <material.Dialog
           open={imageSelectOpen}
           onClose={() => setImageSelectOpen(false)}
           maxWidth="md"
           fullWidth
         >
-          <DialogTitle>Select Image for Annotation</DialogTitle>
-          <DialogContent>
-            <Grid container spacing={2} sx={{ mt: 1 }}>
+          <material.DialogTitle>
+            Select Image for Annotation
+          </material.DialogTitle>
+          <material.DialogContent>
+            <material.Grid container spacing={2} sx={{ mt: 1 }}>
               {images?.map((img) => (
-                <Grid size={{ xs: 6, sm: 4, md: 3 }} key={img.id}>
-                  <Box
+                <material.Grid size={{ xs: 6, sm: 4, md: 3 }} key={img.id}>
+                  <material.Box
                     onClick={() => handleImageSelect(img)}
                     sx={{
                       cursor: "pointer",
@@ -180,7 +180,7 @@ export default function HomeAnnotations() {
                       },
                     }}
                   >
-                    <Box
+                    <material.Box
                       component="img"
                       src={img.url}
                       alt={img.name}
@@ -191,14 +191,14 @@ export default function HomeAnnotations() {
                         display: "block",
                       }}
                     />
-                    <Box
+                    <material.Box
                       sx={{
                         p: 1,
                         textAlign: "center",
                         backgroundColor: "background.paper",
                       }}
                     >
-                      <Box
+                      <material.Box
                         sx={{
                           fontSize: "0.875rem",
                           fontWeight: 500,
@@ -208,31 +208,31 @@ export default function HomeAnnotations() {
                         }}
                       >
                         {img.name}
-                      </Box>
-                    </Box>
-                  </Box>
-                </Grid>
+                      </material.Box>
+                    </material.Box>
+                  </material.Box>
+                </material.Grid>
               ))}
-            </Grid>
-          </DialogContent>
-          <DialogActions>
-            <Button
+            </material.Grid>
+          </material.DialogContent>
+          <material.DialogActions>
+            <material.Button
               onClick={() => {
                 setImageSelectOpen(false);
                 setTempSelectedImage(null);
               }}
             >
               Cancel
-            </Button>
-            <Button
+            </material.Button>
+            <material.Button
               onClick={handleImageSelectConfirm}
               variant="contained"
               disabled={!tempSelectedImage}
             >
               Continue
-            </Button>
-          </DialogActions>
-        </Dialog>
+            </material.Button>
+          </material.DialogActions>
+        </material.Dialog>
 
         {formOpen && (selectedImage || imageForEdit) && (
           <AddEditAnnotation
@@ -259,7 +259,7 @@ export default function HomeAnnotations() {
           message={`Are you sure you want to delete this annotation? This action cannot be undone.`}
           isLoading={deleteMutation.isPending}
         />
-      </Container>
-    </Box>
+      </material.Container>
+    </material.Box>
   );
 }

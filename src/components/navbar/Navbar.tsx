@@ -1,15 +1,15 @@
 "use client";
-import { AppBar, Toolbar, Typography, Box, Avatar } from "@mui/material";
-import ImageIcon from "@mui/icons-material/Image";
+import { material } from "@/lib/material";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 
-interface AppNavigationProps {
+interface NavbarProps {
   onCategoriesClick?: () => void;
   onGalleryClick?: () => void;
 }
 
-export default function AppNavigation({}: AppNavigationProps) {
+export default function Navbar({}: NavbarProps) {
   const router = useRouter();
 
   const tabsList = [
@@ -28,7 +28,7 @@ export default function AppNavigation({}: AppNavigationProps) {
   ];
 
   return (
-    <AppBar
+    <material.AppBar
       position="fixed"
       sx={{
         zIndex: 1300,
@@ -38,7 +38,7 @@ export default function AppNavigation({}: AppNavigationProps) {
         boxShadow: 1,
       }}
     >
-      <Toolbar
+      <material.Toolbar
         sx={{
           maxWidth: "xl",
           mx: "auto",
@@ -47,30 +47,22 @@ export default function AppNavigation({}: AppNavigationProps) {
         }}
       >
         <Link href="/home" style={{ display: "flex", alignItems: "center" }}>
-          <Avatar
+          <material.Box
             sx={{
-              bgcolor: "primary.main",
-              mr: 2,
-              width: 32,
+              width: { xs: 128, md: 320, lg: 400 },
               height: 32,
+              position: "relative",
             }}
           >
-            <ImageIcon fontSize="small" />
-          </Avatar>
-          <Typography
-            variant="h6"
-            component="div"
-            sx={{
-              flexGrow: 1,
-              fontWeight: 600,
-              fontSize: "1.25rem",
-              color: "text.primary",
-            }}
-          >
-            Averroes
-          </Typography>
+            <Image
+              src="/icons/logo.svg"
+              alt="logo-image"
+              fill
+              style={{ objectFit: "contain" }}
+            />
+          </material.Box>
         </Link>
-        <Box
+        <material.Box
           sx={{
             display: "flex",
             gap: 3,
@@ -79,7 +71,7 @@ export default function AppNavigation({}: AppNavigationProps) {
           }}
         >
           {tabsList.map((tab) => (
-            <Typography
+            <material.Typography
               key={tab.label}
               variant="body2"
               onClick={() => router.push(tab.href)}
@@ -92,10 +84,10 @@ export default function AppNavigation({}: AppNavigationProps) {
               }}
             >
               {tab.label}
-            </Typography>
+            </material.Typography>
           ))}
-        </Box>
-      </Toolbar>
-    </AppBar>
+        </material.Box>
+      </material.Toolbar>
+    </material.AppBar>
   );
 }

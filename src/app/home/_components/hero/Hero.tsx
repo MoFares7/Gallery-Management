@@ -1,8 +1,8 @@
-import { Box, Typography } from "@mui/material";
+import { material } from "@/lib/material";
 
 export default function Hero() {
   return (
-    <Box
+    <material.Box
       sx={{
         textAlign: "center",
         background: (theme) =>
@@ -13,7 +13,7 @@ export default function Hero() {
         boxShadow: 3,
       }}
     >
-      <Typography
+      <material.Typography
         variant="h2"
         component="h1"
         sx={{
@@ -23,16 +23,19 @@ export default function Hero() {
         }}
       >
         Daily hit of interactive design and showcase of{" "}
-        <Box
+        <material.Box
           component="span"
           sx={{ color: (theme) => theme?.palette?.error?.light }}
         >
           creativity
-        </Box>
-      </Typography>
-      <Typography variant="h4" sx={{ mb: 4, opacity: 0.9, fontWeight: 400 }}>
+        </material.Box>
+      </material.Typography>
+      <material.Typography
+        variant="h4"
+        sx={{ mb: 4, opacity: 0.9, fontWeight: 400 }}
+      >
         We proudly highlight one brilliant interactive project each day.
-      </Typography>
-    </Box>
+      </material.Typography>
+    </material.Box>
   );
 }

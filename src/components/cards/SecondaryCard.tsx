@@ -1,17 +1,8 @@
 "use client";
 
-import {
-  Card,
-  CardContent,
-  CardMedia,
-  Typography,
-  IconButton,
-  Box,
-  Tooltip,
-} from "@mui/material";
+import { material } from "@/lib/material";
+import { materialIcons } from "@/lib/material-icons";
 import { Image } from "@/types/image";
-import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/Delete";
 import { useState } from "react";
 
 interface SecondaryCardProps {
@@ -32,7 +23,7 @@ export default function SecondaryCard({
   const [hovered, setHovered] = useState(false);
 
   return (
-    <Card
+    <material.Card
       sx={{
         height: "100%",
         cursor: "pointer",
@@ -47,7 +38,7 @@ export default function SecondaryCard({
       onMouseLeave={() => setHovered(false)}
       onClick={onClick}
     >
-      <CardMedia
+      <material.CardMedia
         component="img"
         image={image?.url}
         alt={image?.name}
@@ -56,8 +47,8 @@ export default function SecondaryCard({
           objectFit: "cover",
         }}
       />
-      <CardContent>
-        <Typography
+      <material.CardContent>
+        <material.Typography
           variant="h6"
           component="h2"
           sx={{
@@ -67,21 +58,21 @@ export default function SecondaryCard({
           noWrap
         >
           {image.name}
-        </Typography>
+        </material.Typography>
         {image?.metadata?.resolution && (
-          <Typography
+          <material.Typography
             variant="caption"
             color="text.secondary"
             display="block"
             sx={{ mt: 1 }}
           >
             {image?.metadata?.resolution}
-          </Typography>
+          </material.Typography>
         )}
-      </CardContent>
+      </material.CardContent>
 
       {hovered && isAbleAction && (
-        <Box
+        <material.Box
           sx={{
             position: "absolute",
             top: 8,
@@ -91,8 +82,8 @@ export default function SecondaryCard({
           }}
         >
           {onClickEdit && (
-            <Tooltip title="Edit">
-              <IconButton
+            <material.Tooltip title="Edit">
+              <material.IconButton
                 size="small"
                 onClick={(e) => {
                   e.stopPropagation();
@@ -103,13 +94,13 @@ export default function SecondaryCard({
                   "&:hover": { bgcolor: "rgba(255,255,255,1)" },
                 }}
               >
-                <EditIcon fontSize="small" />
-              </IconButton>
-            </Tooltip>
+                <materialIcons.edit fontSize="small" />
+              </material.IconButton>
+            </material.Tooltip>
           )}
           {onClickDelete && (
-            <Tooltip title="Delete">
-              <IconButton
+            <material.Tooltip title="Delete">
+              <material.IconButton
                 size="small"
                 onClick={(e) => {
                   e.stopPropagation();
@@ -121,12 +112,12 @@ export default function SecondaryCard({
                   "&:hover": { bgcolor: "rgba(255,255,255,1)" },
                 }}
               >
-                <DeleteIcon fontSize="small" />
-              </IconButton>
-            </Tooltip>
+                <materialIcons.delete fontSize="small" />
+              </material.IconButton>
+            </material.Tooltip>
           )}
-        </Box>
+        </material.Box>
       )}
-    </Card>
+    </material.Card>
   );
 }
