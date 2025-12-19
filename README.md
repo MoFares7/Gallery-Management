@@ -1,4 +1,4 @@
-# Gallaery Management 
+# Gallery Management 
 
 ## 🌐 Project Link  => https://gallary-management.vercel.app
 
