@@ -22,7 +22,7 @@ export const metadata: Metadata = {
   title: "Averroes",
   description: "Manage images, categories, and annotations",
   icons: {
-    icon: "../../public/icons/logo.svg",
+    icon: "/icons/logo.svg",
   },
 };
 
