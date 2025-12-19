@@ -1,11 +1,12 @@
+import { useNavigation } from "@/hooks/useNavigation";
 import { useGetCategoryByID } from "@/services/category.service";
 import { useGetImages } from "@/services/image.service";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import { useMemo } from "react";
 
 export const useCategoriesDetails = () => {
   const params = useParams();
-  const router = useRouter();
+  const { back } = useNavigation();
   const categoryId = Number(params.id);
   const { data: category, isLoading, error } = useGetCategoryByID(categoryId);
   const { data: allImages } = useGetImages();
@@ -16,7 +17,7 @@ export const useCategoriesDetails = () => {
   }, [allImages, category]);
 
   const handleBack = () => {
-    router.back();
+    back();
   };
 
   return {

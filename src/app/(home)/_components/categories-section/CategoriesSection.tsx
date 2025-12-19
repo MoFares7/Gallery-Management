@@ -1,13 +1,14 @@
+"use client";
 import CategoryCard from "@/components/cards/CategoryCard";
 import PrimaryCard from "@/components/cards/PrimaryCard";
 import { useGetCategories } from "@/services/category.service";
 import { material } from "@/lib/material";
-import { useRouter } from "next/navigation";
 import { useMemo } from "react";
 import HandleStatusSection from "@/components/handles/HandleStateSection";
+import { useNavigation } from "@/hooks/useNavigation";
 
 export default function CategoriesSection() {
-  const router = useRouter();
+  const { push } = useNavigation();
   const { data: categories, isLoading, error } = useGetCategories();
 
   const displayedCategories = useMemo(() => {
@@ -16,7 +17,7 @@ export default function CategoriesSection() {
   }, [categories]);
 
   const handleView = (categoryId: number) => {
-    router.push(`/categories/${categoryId}`);
+    push(`/categories/${categoryId}`);
   };
 
   if (isLoading) {

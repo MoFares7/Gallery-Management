@@ -1,6 +1,6 @@
-# Gallery Management 
+# Gallery Management
 
-## 🌐 Project Link  => https://gallary-management.vercel.app
+## 🌐 Project Link => https://gallary-management.vercel.app
 
 A modern web application built with Next.js for managing images, categories, and annotations. This project provides a comprehensive solution for organizing and annotating images with a user-friendly interface.
 
@@ -103,6 +103,7 @@ To run ESLint:
 pnpm lint
 
 ```
+
 ## 📝 Available Scripts
 
 - `pnpm dev` - Start development server

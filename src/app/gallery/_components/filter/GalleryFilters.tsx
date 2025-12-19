@@ -1,12 +1,11 @@
 "use client";
-import { type ImageFilters } from "@/types/image";
-import { materialIcons } from "@/lib/material-icons";
-import { material } from "@/lib/material";
-import { useGetCategories } from "@/services/category.service";
-import { Formik, Form, Field } from "formik";
-import * as Yup from "yup";
-import FormikInputTextField from "@/components/inputs/formik-input/FormikInputTextField";
 import FormikInputSelectField from "@/components/inputs/formik-input/FormikInputSelectField";
+import FormikInputTextField from "@/components/inputs/formik-input/FormikInputTextField";
+import { material } from "@/lib/material";
+import { materialIcons } from "@/lib/material-icons";
+import { type ImageFilters } from "@/types/image";
+import { Field, Form, Formik } from "formik";
+import { useGalleryFilter } from "../../_hooks/useGalleryFilter";
 
 interface GalleryFiltersProps {
   open: boolean;
@@ -15,67 +14,23 @@ interface GalleryFiltersProps {
   onFiltersChange: (filters: ImageFilters) => void;
 }
 
-const validationSchema = Yup.object({
-  name: Yup.string().optional(),
-  categoryId: Yup.number().optional(),
-  metadata: Yup.object({
-    size: Yup.string().optional(),
-    resolution: Yup.string().optional(),
-  }).optional(),
-});
-
-interface FormValues {
-  name: string;
-  categoryId: number | undefined;
-  metadata: {
-    size: string;
-    resolution: string;
-  };
-}
-
 export default function GalleryFilters({
   open,
   onClose,
   filters,
   onFiltersChange,
 }: GalleryFiltersProps) {
-  const initialValues: FormValues = {
-    name: filters.name ?? "",
-    categoryId: filters.categoryId,
-    metadata: {
-      size: filters.metadata?.size ?? "",
-      resolution: filters.metadata?.resolution ?? "",
-    },
-  };
-  const { data: categories } = useGetCategories();
-
-  const handleSubmit = (values: FormValues) => {
-    const newFilters: ImageFilters = {
-      name: values.name || undefined,
-      categoryId: values.categoryId,
-      metadata: {
-        size: values.metadata.size || undefined,
-        resolution: values.metadata.resolution || undefined,
-      },
-    };
-
-    if (!newFilters.metadata?.size && !newFilters.metadata?.resolution) {
-      delete newFilters.metadata;
-    }
-
-    onFiltersChange(newFilters);
-    onClose();
-  };
-
-  const handleCancel = () => {
-    onClose();
-  };
+  const { handleSubmit, handleCancel, initialValues, categories } =
+    useGalleryFilter({
+      filters,
+      onFiltersChange,
+      onClose,
+    });
 
   return (
     <material.Dialog open={open} onClose={handleCancel} maxWidth="sm" fullWidth>
       <Formik
         initialValues={initialValues}
-        validationSchema={validationSchema}
         onSubmit={handleSubmit}
         enableReinitialize
       >

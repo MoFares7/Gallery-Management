@@ -1,3 +1,4 @@
+import { useNavigation } from "@/hooks/useNavigation";
 import {
   useCreateImage,
   useDeleteImage,
@@ -5,7 +6,6 @@ import {
   useUpdateImage,
 } from "@/services/image.service";
 import { Image, ImageFilters } from "@/types/image";
-import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 
 type CreateImageData = {
@@ -21,7 +21,7 @@ type CreateImageData = {
 };
 
 export const useGalleryHome = () => {
-  const router = useRouter();
+  const { push } = useNavigation();
   const { data: images, isLoading, error } = useGetImages();
   const createMutation = useCreateImage();
   const updateMutation = useUpdateImage();
@@ -31,6 +31,7 @@ export const useGalleryHome = () => {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState<Image | undefined>();
   const [filters, setFilters] = useState<ImageFilters>({});
+  const [filtersOpen, setFiltersOpen] = useState(false);
 
   const parseSizeToBytes = (sizeStr: string): number => {
     const match = sizeStr.match(/^(\d+(?:\.\d+)?)\s*(KB|MB|GB)?$/i);
@@ -132,7 +133,7 @@ export const useGalleryHome = () => {
   };
 
   const handleView = (image: Image) => {
-    router.push(`/gallery/${image.id}`);
+    push(`/gallery/${image.id}`);
   };
 
   const handleEdit = (image: Image) => {
@@ -187,6 +188,8 @@ export const useGalleryHome = () => {
     setSelectedImage,
     filters,
     setFilters,
+    filtersOpen,
+    setFiltersOpen,
     filteredImages,
     isLoading,
     error,

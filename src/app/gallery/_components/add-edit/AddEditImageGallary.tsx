@@ -4,9 +4,9 @@ import InputFileField from "@/components/inputs/InputFileField";
 import FormikInputSelectField from "@/components/inputs/formik-input/FormikInputSelectField";
 import FormikInputTextField from "@/components/inputs/formik-input/FormikInputTextField";
 import { material } from "@/lib/material";
-import { useGetCategories } from "@/services/category.service";
 import { CreateImageDto, Image as ImageType } from "@/types/image";
 import { Field, Form, Formik } from "formik";
+import useAddEditGallery from "../../_hooks/useAddEditGallery";
 
 interface AddEditImageGallaryProps {
   open: boolean;
@@ -16,13 +16,6 @@ interface AddEditImageGallaryProps {
   imageToEdit?: ImageType | null;
 }
 
-interface FormValues {
-  file: File | null;
-  name: string;
-  url: string;
-  categoryId: number | undefined;
-}
-
 export default function AddEditImageGallary({
   open,
   onClose,
@@ -30,69 +23,12 @@ export default function AddEditImageGallary({
   isLoading = false,
   imageToEdit,
 }: AddEditImageGallaryProps) {
-  const isEditMode = !!imageToEdit;
-
-  const initialValues: FormValues = {
-    file: null,
-    name: imageToEdit?.name || "",
-    url: imageToEdit?.url || "",
-    categoryId: imageToEdit?.categoryId,
-  };
-
-  const { data: categories } = useGetCategories();
-
-  const handleSubmit = (values: FormValues) => {
-    if (!values.name || !values.url) {
-      return;
-    }
-
-    if (!isEditMode && !values.file) {
-      return;
-    }
-
-    const img = new Image();
-    img.onload = () => {
-      const metadata = {
-        size: values.file?.size,
-        width: img.width,
-        height: img.height,
-        format:
-          values.file?.type.split("/")[1] ||
-          values.url.split(".").pop()?.split("?")[0] ||
-          "unknown",
-      };
-
-      onSubmit({
-        name: values.name,
-        url: values.url,
-        categoryId: values.categoryId,
-        metadata,
-      });
-    };
-
-    img.onerror = () => {
-      const metadata = {
-        size: values.file?.size,
-        format:
-          values.file?.type.split("/")[1] ||
-          values.url.split(".").pop()?.split("?")[0] ||
-          "unknown",
-      };
-
-      onSubmit({
-        name: values.name,
-        url: values.url,
-        categoryId: values.categoryId,
-        metadata,
-      });
-    };
-
-    img.src = values.url;
-  };
-
-  const handleClose = () => {
-    onClose();
-  };
+  const { isEditMode, handleSubmit, handleClose, initialValues, categories } =
+    useAddEditGallery({
+      imageToEdit: imageToEdit || null,
+      onSubmit,
+      onClose,
+    });
 
   return (
     <material.Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>

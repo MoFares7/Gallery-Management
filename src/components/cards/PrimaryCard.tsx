@@ -1,6 +1,7 @@
+"use client";
 import { material } from "@/lib/material";
 import { materialIcons } from "@/lib/material-icons";
-import { useRouter } from "next/navigation";
+import { useNavigation } from "@/hooks/useNavigation";
 
 interface PrimaryCardProps {
   title: string;
@@ -13,7 +14,7 @@ export default function PrimaryCard({
   href,
   children,
 }: PrimaryCardProps) {
-  const router = useRouter();
+  const { push } = useNavigation();
   return (
     <material.Box
       sx={{
@@ -44,7 +45,7 @@ export default function PrimaryCard({
         <material.Button
           variant="outlined"
           endIcon={<materialIcons.arrowForward />}
-          onClick={() => router.push(href)}
+          onClick={() => push(href)}
           sx={{
             textTransform: "none",
             borderRadius: 2,

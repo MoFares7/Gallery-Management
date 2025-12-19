@@ -1,13 +1,14 @@
+"use client";
 import SecondaryCard from "@/components/cards/SecondaryCard";
 import PrimaryCard from "@/components/cards/PrimaryCard";
 import { useGetImages } from "@/services/image.service";
 import { material } from "@/lib/material";
-import { useRouter } from "next/navigation";
 import { useMemo } from "react";
 import HandleStatusSection from "@/components/handles/HandleStateSection";
+import { useNavigation } from "@/hooks/useNavigation";
 
 export default function GallerySection() {
-  const router = useRouter();
+  const { push } = useNavigation();
   const { data: images, isLoading, error } = useGetImages();
 
   const displayedImages = useMemo(() => {
@@ -32,7 +33,7 @@ export default function GallerySection() {
                 >
                   <SecondaryCard
                     image={image}
-                    onClick={() => router.push(`/gallery/${image.id}`)}
+                    onClick={() => push(`/gallery/${image.id}`)}
                   />
                 </material.Grid>
               ))

@@ -40,9 +40,9 @@ export const theme = createTheme({
       secondary: "#666666",
     },
     error: {
-      main: "#667eea",
-      light: "#a8d8ff",
-      dark: "#764ba2",
+      main: "#3aa1e0",
+      light: "#8fc8eb",
+      dark: "#1d5a80",
     },
     category: [
       "#FF6B6B",

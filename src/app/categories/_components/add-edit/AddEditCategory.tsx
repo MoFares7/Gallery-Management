@@ -1,14 +1,14 @@
 "use client";
 
+import FormikInputTextField from "@/components/inputs/formik-input/FormikInputTextField";
+import { material } from "@/lib/material";
 import {
   Category,
   CreateCategoryDto,
   UpdateCategoryDto,
 } from "@/types/category";
-import { material } from "@/lib/material";
 import { Field, Form, Formik } from "formik";
 import { categoryValidationSchema } from "../../_validation";
-import FormikInputTextField from "@/components/inputs/formik-input/FormikInputTextField";
 
 interface CategoryFormProps {
   open: boolean;

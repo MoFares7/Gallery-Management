@@ -1,14 +1,15 @@
+import { useNavigation } from "@/hooks/useNavigation";
 import { useGetImageByID } from "@/services/image.service";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 
 export const useGalleryDetails = () => {
   const params = useParams();
-  const router = useRouter();
+  const { back } = useNavigation();
   const imageId = Number(params.id);
   const { data: image, isLoading, error } = useGetImageByID(imageId);
 
   const handleBack = () => {
-    router.back();
+    back();
   };
 
   return {

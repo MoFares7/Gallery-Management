@@ -9,11 +9,11 @@ import {
   UpdateCategoryDto,
   CreateCategoryDto,
 } from "@/types/category";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { useNavigation } from "@/hooks/useNavigation";
 
 export const useCategoriesHome = () => {
-  const router = useRouter();
+  const { push } = useNavigation();
   const { data: categories, isLoading, error } = useGetCategories();
   const createMutation = useCreateCategory();
   const updateMutation = useUpdateCategory();
@@ -41,7 +41,7 @@ export const useCategoriesHome = () => {
   };
 
   const handleView = (category: Category) => {
-    router.push(`/categories/${category.id}`);
+    push(`/categories/${category.id}`);
   };
 
   const handleFormSubmit = (data: CreateCategoryDto | UpdateCategoryDto) => {
