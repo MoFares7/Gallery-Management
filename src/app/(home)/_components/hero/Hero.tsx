@@ -1,3 +1,4 @@
+"use client";
 import { material } from "@/lib/material";
 
 export default function Hero() {

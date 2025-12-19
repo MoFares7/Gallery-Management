@@ -1,11 +1,11 @@
 "use client";
 import CategoryCard from "@/components/cards/CategoryCard";
+import HandleStatusSection from "@/components/handles/HandleStateSection";
 import PageHeader from "@/components/header/PageHeader";
 import DeleteConfirmationDialog from "@/components/modals/DeleteConfirmationDialog";
 import { material } from "@/lib/material";
 import { useCategoriesHome } from "../../_hooks/useCategoriesHome";
 import AddEditCategory from "../add-edit/AddEditCategory";
-import HandleStatusSection from "@/components/handles/HandleStateSection";
 
 export default function HomeCategories() {
   const {
@@ -30,72 +30,64 @@ export default function HomeCategories() {
   } = useCategoriesHome();
 
   return (
-    <material.Box
-      sx={{
-        minHeight: "100vh",
-        backgroundColor: "background.default",
-        background: "background.gradient",
-      }}
-    >
-      <material.Container maxWidth="xl" sx={{ pt: { xs: 4, md: 8, lg: 16 } }}>
-        <PageHeader
-          title="Categories"
-          buttonText="Create Category"
-          onClick={handleCreate}
-        />
+    <material.Box>
+      <PageHeader
+        title="Categories"
+        buttonText="Create Category"
+        onClick={handleCreate}
+      />
 
-        {isLoading ? (
-          <HandleStatusSection type="loading" />
-        ) : error ? (
-          <HandleStatusSection type="error" />
-        ) : (
-          <material.Grid container spacing={3}>
-            {categories && categories.length > 0 ? (
-              categories.map((category) => (
-                <material.Grid
-                  size={{ xs: 6, sm: 4, md: 3, lg: 2.2, xl: 2 }}
-                  key={category.id}
-                >
-                  <CategoryCard
-                    category={category}
-                    onClick={() => handleView(category)}
-                    onClickEdit={() => handleEdit(category)}
-                    onClickDelete={() => handleDelete(category)}
-                    isAbleAction={true}
-                  />
-                </material.Grid>
-              ))
-            ) : (
-              <material.Grid size={{ xs: 12 }}>
-                <HandleStatusSection type="empty" />
+      {isLoading ? (
+        <HandleStatusSection type="loading" />
+      ) : error ? (
+        <HandleStatusSection type="error" />
+      ) : (
+        <material.Grid container spacing={3}>
+          {categories && categories.length > 0 ? (
+            categories.map((category) => (
+              <material.Grid
+                size={{ xs: 6, sm: 4, md: 3, lg: 2.2, xl: 2 }}
+                key={category.id}
+              >
+                <CategoryCard
+                  category={category}
+                  onClick={() => handleView(category)}
+                  onClickEdit={() => handleEdit(category)}
+                  onClickDelete={() => handleDelete(category)}
+                  isAbleAction={true}
+                />
               </material.Grid>
-            )}
-          </material.Grid>
-        )}
+            ))
+          ) : (
+            <material.Grid size={{ xs: 12 }}>
+              <HandleStatusSection type="empty" />
+            </material.Grid>
+          )}
+        </material.Grid>
+      )}
 
-        <AddEditCategory
-          open={formOpen}
-          onClose={() => {
-            setFormOpen(false);
-            setSelectedCategory(undefined);
-          }}
-          onSubmit={handleFormSubmit}
-          category={selectedCategory}
-          isLoading={createMutation.isPending || updateMutation.isPending}
-        />
+      <AddEditCategory
+        open={formOpen}
+        onClose={() => {
+          setFormOpen(false);
+          setSelectedCategory(undefined);
+        }}
+        onSubmit={handleFormSubmit}
+        category={selectedCategory}
+        isLoading={createMutation.isPending || updateMutation.isPending}
+      />
 
-        <DeleteConfirmationDialog
-          open={deleteDialogOpen}
-          onClose={() => {
-            setDeleteDialogOpen(false);
-            setSelectedCategory(undefined);
-          }}
-          onConfirm={handleConfirmDelete}
-          title="Delete Category"
-          message={`Are you sure you want to delete "${selectedCategory?.name}"? This action cannot be undone.`}
-          isLoading={deleteMutation.isPending}
-        />
-      </material.Container>
+      <DeleteConfirmationDialog
+        open={deleteDialogOpen}
+        onClose={() => {
+          setDeleteDialogOpen(false);
+          setSelectedCategory(undefined);
+        }}
+        onConfirm={handleConfirmDelete}
+        title="Delete Category"
+        message={`Are you sure you want to delete "${selectedCategory?.name}"? This action cannot be undone.`}
+        isLoading={deleteMutation.isPending}
+      />
     </material.Box>
   );
 }

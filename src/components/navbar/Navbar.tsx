@@ -1,12 +1,13 @@
 "use client";
 import { material } from "@/lib/material";
 import { materialIcons } from "@/lib/material-icons";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
 import { useMediaQuery } from "@mui/material";
 import { theme } from "@/theme";
+import { useNavigation } from "@/hooks/useNavigation";
+import { useNavigationLoading } from "@/providers/NavigationLoadingProvider";
 
 interface NavbarProps {
   onCategoriesClick?: () => void;
@@ -14,7 +15,8 @@ interface NavbarProps {
 }
 
 export default function Navbar({}: NavbarProps) {
-  const router = useRouter();
+  const { push } = useNavigation();
+  const { setNavigating } = useNavigationLoading();
   const [mobileOpen, setMobileOpen] = useState(false);
   const isMobile = useMediaQuery(theme.breakpoints.down("lg"));
   const tabsList = [
@@ -37,7 +39,7 @@ export default function Navbar({}: NavbarProps) {
   };
 
   const handleNavigation = (href: string) => {
-    router.push(href);
+    push(href);
     setMobileOpen(false);
   };
 
@@ -51,7 +53,11 @@ export default function Navbar({}: NavbarProps) {
           p: 2,
         }}
       >
-        <Link href="/" style={{ display: "flex", alignItems: "center" }}>
+        <Link
+          href="/"
+          style={{ display: "flex", alignItems: "center" }}
+          onClick={() => setNavigating(true)}
+        >
           <material.Box
             sx={{
               width: 128,
@@ -118,7 +124,11 @@ export default function Navbar({}: NavbarProps) {
           justifyContent: "space-between",
         }}
       >
-        <Link href="/" style={{ display: "flex", alignItems: "center" }}>
+        <Link
+          href="/"
+          style={{ display: "flex", alignItems: "center" }}
+          onClick={() => setNavigating(true)}
+        >
           <material.Box
             sx={{
               width: { xs: 128, md: 320, lg: 400 },
@@ -146,7 +156,7 @@ export default function Navbar({}: NavbarProps) {
             <material.Typography
               key={tab.label}
               variant="body2"
-              onClick={() => router.push(tab.href)}
+              onClick={() => push(tab.href)}
               sx={{
                 color: "text.secondary",
                 cursor: "pointer",

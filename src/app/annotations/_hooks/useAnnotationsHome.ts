@@ -1,23 +1,17 @@
+import { useNavigation } from "@/hooks/useNavigation";
 import {
   useAnnotations,
-  useCreateAnnotation,
   useDeleteAnnotation,
-  useUpdateAnnotation,
 } from "@/services/annotation.service";
-import {
-  Annotation,
-  CreateAnnotationDto,
-  UpdateAnnotationDto,
-} from "@/types/annotation";
+import { useGetImages } from "@/services/image.service";
+import { Annotation } from "@/types/annotation";
 import { Image } from "@/types/image";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 export const useAnnotationsHome = () => {
-  const router = useRouter();
+  const { push } = useNavigation();
+  const { data: images } = useGetImages();
   const { data: annotations, isLoading, error } = useAnnotations();
-  const createMutation = useCreateAnnotation();
-  const updateMutation = useUpdateAnnotation();
   const deleteMutation = useDeleteAnnotation();
 
   const [formOpen, setFormOpen] = useState(false);
@@ -26,11 +20,10 @@ export const useAnnotationsHome = () => {
     Annotation | undefined
   >();
   const [selectedImage, setSelectedImage] = useState<Image | null>(null);
-
-  const handleCreate = () => {
-    setSelectedAnnotation(undefined);
-    setSelectedImage(null);
-  };
+  const [imageSelectOpen, setImageSelectOpen] = useState(false);
+  const [tempSelectedImage, setTempSelectedImage] = useState<Image | null>(
+    null
+  );
 
   const handleEdit = (annotation: Annotation) => {
     setSelectedAnnotation(annotation);
@@ -43,29 +36,66 @@ export const useAnnotationsHome = () => {
   };
 
   const handleView = (annotation: Annotation) => {
-    router.push(`/gallery/${annotation.imageId}`);
+    push(`/gallery/${annotation.imageId}`);
   };
 
-  const handleFormSubmit = (
-    data: CreateAnnotationDto | UpdateAnnotationDto
-  ) => {
-    if (selectedAnnotation) {
-      updateMutation.mutate(
-        { id: selectedAnnotation.id, data: data as UpdateAnnotationDto },
-        {
-          onSuccess: () => {
-            setFormOpen(false);
-            setSelectedAnnotation(undefined);
-          },
-        }
+  const annotationsByImage = useMemo(() => {
+    if (!annotations) return new Map();
+    const map = new Map<number, typeof annotations>();
+    annotations.forEach((annotation) => {
+      if (!map.has(annotation.imageId)) {
+        map.set(annotation.imageId, []);
+      }
+      map.get(annotation.imageId)!.push(annotation);
+    });
+    return map;
+  }, [annotations]);
+
+  const imageMap = useMemo(() => {
+    if (!images) return new Map();
+    return new Map(images.map((img) => [img.id, img]));
+  }, [images]);
+
+  const annotationsWithImages = useMemo(() => {
+    if (!annotations || !images) return [];
+
+    return Array.from(annotationsByImage.entries())
+      .map(([imageId, imageAnnotations]) => {
+        const image = imageMap?.get(imageId);
+        if (!image) return null;
+        return {
+          image,
+          annotation: imageAnnotations[0],
+        };
+      })
+      .filter(
+        (item): item is { image: Image; annotation: Annotation } =>
+          item !== null
       );
-    } else {
-      createMutation.mutate(data as CreateAnnotationDto, {
-        onSuccess: () => {
-          setFormOpen(false);
-        },
-      });
+  }, [annotationsByImage, imageMap, annotations, images]);
+
+  const imageForEdit = useMemo(() => {
+    if (selectedAnnotation) {
+      return imageMap.get(selectedAnnotation.imageId);
     }
+    return null;
+  }, [selectedAnnotation, imageMap]);
+
+  const handleCreateClick = () => {
+    setTempSelectedImage(null);
+    setImageSelectOpen(true);
+  };
+
+  const handleImageSelectConfirm = () => {
+    if (tempSelectedImage) {
+      setSelectedImage(tempSelectedImage);
+      setImageSelectOpen(false);
+      setFormOpen(true);
+    }
+  };
+
+  const handleImageSelect = (image: Image) => {
+    setTempSelectedImage(image);
   };
 
   const handleConfirmDelete = () => {
@@ -80,7 +110,6 @@ export const useAnnotationsHome = () => {
   };
 
   return {
-    annotations,
     isLoading,
     error,
     formOpen,
@@ -91,14 +120,20 @@ export const useAnnotationsHome = () => {
     setSelectedAnnotation,
     selectedImage,
     setSelectedImage,
-    handleCreate,
     handleEdit,
     handleDelete,
     handleView,
-    handleFormSubmit,
     handleConfirmDelete,
-    createMutation,
-    updateMutation,
     deleteMutation,
+    imageSelectOpen,
+    setImageSelectOpen,
+    tempSelectedImage,
+    setTempSelectedImage,
+    handleCreateClick,
+    handleImageSelectConfirm,
+    handleImageSelect,
+    annotationsWithImages,
+    imageForEdit,
+    images,
   };
 };

@@ -6,6 +6,7 @@ import { Image } from "@/types/image";
 import { material } from "@/lib/material";
 import { Image as KonvaImage, Layer, Rect, Stage } from "react-konva";
 import { useAddEditAnnotation } from "../../_hooks/useAddEditAnnotation";
+import PrimaryButton from "@/components/buttons/PrimaryButton";
 
 interface AddEditAnnotationProps {
   image: Image;
@@ -28,17 +29,23 @@ export default function AddEditAnnotation({
     setIsDrawingMode,
     isActivelyDrawing,
     currentRect,
+    pendingRect,
     isSaving,
+    isImageLoading,
     editingAnnotationId,
     stageSize,
     ContainerRef,
     annotations,
-    isLoading,
     konvaImage,
     handleMouseDown,
     handleMouseMove,
     handleMouseUp,
+    handlePointerDown,
+    handlePointerMove,
+    handlePointerUp,
     handleEditAnnotation,
+    handleSave,
+    handleCancel,
     renderAnnotation,
   } = useAddEditAnnotation(image, annotationToEdit, onClose, isModal);
 
@@ -54,34 +61,44 @@ export default function AddEditAnnotation({
       >
         <material.Box sx={{ mb: 2 }}>
           <material.Box
-            sx={{ display: "flex", alignItems: "center", gap: 2, mb: 2 }}
+            sx={{
+              display: { xs: "block", md: "flex" },
+              alignItems: "center",
+              gap: 2,
+              mb: 2,
+            }}
           >
             <material.Box>
-              <material.Button
+              <PrimaryButton
                 variant="contained"
-                size="small"
-                sx={{ textTransform: "none" }}
                 onClick={() => setIsDrawingMode(!isDrawingMode)}
-              >
-                {isDrawingMode ? "Drawing Mode Active" : "Start Drawing"}
-              </material.Button>
+                buttonText={
+                  isDrawingMode ? "Drawing Mode Active" : "Start Drawing"
+                }
+                disabled={!!pendingRect}
+              />
             </material.Box>
             <material.Box
-              sx={{ display: "flex", gap: 1, alignItems: "center" }}
+              sx={{
+                display: "flex",
+                gap: 1,
+                alignItems: "center",
+                pt: { xs: 2, md: 0 },
+              }}
             >
               {COLORS.map((color) => (
                 <material.Tooltip key={color} title={color}>
                   <material.Box
                     onClick={() => setSelectedColor(color)}
                     sx={{
-                      width: 32,
-                      height: 32,
+                      width: { xs: 24, md: 32 },
+                      height: { xs: 24, md: 32 },
                       backgroundColor: color,
                       border:
                         selectedColor === color
-                          ? "3px solid #000"
+                          ? "2px solid #000"
                           : "2px solid #ccc",
-                      borderRadius: "4px",
+                      borderRadius: "100%",
                       cursor: "pointer",
                       transition: "all 0.2s",
                       "&:hover": {
@@ -92,6 +109,31 @@ export default function AddEditAnnotation({
                 </material.Tooltip>
               ))}
             </material.Box>
+            {pendingRect && (
+              <material.Box
+                sx={{
+                  display: "flex",
+                  gap: 1,
+                  ml: "auto",
+                  pt: { xs: 2, md: 0 },
+                }}
+              >
+                <PrimaryButton
+                  variant="outlined"
+                  onClick={handleCancel}
+                  buttonText="Cancel"
+                  disabled={isSaving}
+                  backgroundColor="background.paper"
+                  hoverBackgroundColor="background.default"
+                />
+                <PrimaryButton
+                  variant="contained"
+                  onClick={handleSave}
+                  buttonText={isSaving ? "Saving..." : "Save"}
+                  disabled={isSaving}
+                />
+              </material.Box>
+            )}
           </material.Box>
         </material.Box>
 
@@ -102,6 +144,7 @@ export default function AddEditAnnotation({
             display: "flex",
             justifyContent: "center",
             overflow: "hidden",
+            maxHeight: { xs: "30vh", md: "none" },
           }}
         >
           {konvaImage && (
@@ -111,7 +154,13 @@ export default function AddEditAnnotation({
               onMouseDown={handleMouseDown}
               onMouseMove={handleMouseMove}
               onMouseUp={handleMouseUp}
-              style={{ cursor: isDrawingMode ? "crosshair" : "default" }}
+              onTouchStart={handlePointerDown}
+              onTouchMove={handlePointerMove}
+              onTouchEnd={handlePointerUp}
+              style={{
+                cursor: isDrawingMode ? "crosshair" : "default",
+                touchAction: isDrawingMode ? "none" : "auto",
+              }}
             >
               <Layer>
                 <KonvaImage
@@ -157,6 +206,19 @@ export default function AddEditAnnotation({
                     listening={false}
                   />
                 )}
+                {pendingRect && !isActivelyDrawing && (
+                  <Rect
+                    x={pendingRect.x}
+                    y={pendingRect.y}
+                    width={pendingRect.width}
+                    height={pendingRect.height}
+                    fill={pendingRect.color}
+                    opacity={0.5}
+                    stroke={pendingRect.color}
+                    strokeWidth={3}
+                    listening={false}
+                  />
+                )}
               </Layer>
             </Stage>
           )}
@@ -165,8 +227,19 @@ export default function AddEditAnnotation({
     </material.Box>
   );
 
-  if (isLoading) {
-    return <HandleStatusSection type="loading" />;
+  if (isImageLoading) {
+    return (
+      <material.Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          minHeight: 400,
+        }}
+      >
+        <HandleStatusSection type="loading" />
+      </material.Box>
+    );
   }
 
   if (isModal) {
@@ -177,9 +250,14 @@ export default function AddEditAnnotation({
         </material.DialogTitle>
         <material.DialogContent>{content}</material.DialogContent>
         <material.DialogActions>
-          <material.Button onClick={onClose} disabled={isSaving}>
-            Close
-          </material.Button>
+          <PrimaryButton
+            variant="outlined"
+            buttonText="Close"
+            onClick={() => onClose?.()}
+            disabled={isSaving}
+            backgroundColor="background.paper"
+            hoverBackgroundColor="background.default"
+          />
         </material.DialogActions>
       </material.Dialog>
     );

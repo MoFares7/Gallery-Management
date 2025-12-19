@@ -5,6 +5,8 @@ import { AppProviders } from "@/providers/AppProviders";
 import { Suspense } from "react";
 import Navbar from "@/components/navbar/Navbar";
 import HandleStatusSection from "@/components/handles/HandleStateSection";
+import NavigationLoader from "@/components/handles/NavigationLoader";
+import { material } from "./../lib/material";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -33,9 +35,28 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <AppProviders>
+          <NavigationLoader />
           <Suspense fallback={<HandleStatusSection type="loading" />}>
             <Navbar />
-            {children}
+            <material.Box
+              sx={{
+                minHeight: "100vh",
+                backgroundColor: "background.default",
+                background: "background.gradient",
+              }}
+            >
+              <material.Container
+                maxWidth="xl"
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 4,
+                  pt: { xs: 4, md: 8, lg: 16 },
+                }}
+              >
+                {children}
+              </material.Container>
+            </material.Box>
           </Suspense>
         </AppProviders>
       </body>

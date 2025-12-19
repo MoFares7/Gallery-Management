@@ -41,7 +41,9 @@ export const useAddEditAnnotation = (
   const [isDrawingMode, setIsDrawingMode] = useState(false);
   const [isActivelyDrawing, setIsActivelyDrawing] = useState(false);
   const [currentRect, setCurrentRect] = useState<DrawingRect | null>(null);
+  const [pendingRect, setPendingRect] = useState<DrawingRect | null>(null);
   const [isSaving, setIsSaving] = useState(false);
+  const [isImageLoading, setIsImageLoading] = useState(true);
   const [editingAnnotationId, setEditingAnnotationId] = useState<number | null>(
     annotationToEdit?.id || null
   );
@@ -49,13 +51,10 @@ export const useAddEditAnnotation = (
   const [imageScale, setImageScale] = useState(1);
   const ContainerRef = useRef<HTMLDivElement>(null);
 
-  // Don't fetch annotations by image ID - only use selected annotation if editing
   const annotations = useMemo(() => {
     if (annotationToEdit) {
-      // When editing, only show the annotation being edited
       return [annotationToEdit];
     }
-    // When creating, don't show any annotations (empty array)
     return [];
   }, [annotationToEdit]);
 
@@ -76,10 +75,15 @@ export const useAddEditAnnotation = (
   }, [annotationToEdit?.id]);
 
   useEffect(() => {
+    setIsImageLoading(true);
     const img = new window.Image();
     img.crossOrigin = "anonymous";
     img.onload = () => {
       setKonvaImage(img);
+      setIsImageLoading(false);
+    };
+    img.onerror = () => {
+      setIsImageLoading(false);
     };
     img.src = image.url;
   }, [image.url]);
@@ -108,7 +112,9 @@ export const useAddEditAnnotation = (
   }, [konvaImage]);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const handleMouseDown = (e: any) => {
+  const handlePointerDown = (e: any) => {
+    e.evt?.preventDefault?.();
+
     const stage = e.target.getStage();
     if (!stage) return;
 
@@ -149,8 +155,12 @@ export const useAddEditAnnotation = (
   };
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const handleMouseMove = (e: any) => {
+  const handlePointerMove = (e: any) => {
     if (!isActivelyDrawing || !currentRect) return;
+
+    if (isDrawingMode) {
+      e.evt?.preventDefault?.();
+    }
 
     const stage = e.target.getStage();
     if (!stage) return;
@@ -165,76 +175,93 @@ export const useAddEditAnnotation = (
     }
   };
 
-  const handleMouseUp = () => {
-    if (!isActivelyDrawing || !currentRect || isSaving) {
-      if (!isSaving) {
-        setIsActivelyDrawing(false);
-        setCurrentRect(null);
-      }
+  const handlePointerUp = () => {
+    if (!isActivelyDrawing || !currentRect) {
+      setIsActivelyDrawing(false);
+      setCurrentRect(null);
       return;
     }
 
     if (Math.abs(currentRect.width) > 5 && Math.abs(currentRect.height) > 5) {
-      const normalizedRect = {
-        x:
-          Math.min(currentRect.x, currentRect.x + currentRect.width) /
-          imageScale,
-        y:
-          Math.min(currentRect.y, currentRect.y + currentRect.height) /
-          imageScale,
-        width: Math.abs(currentRect.width) / imageScale,
-        height: Math.abs(currentRect.height) / imageScale,
-      };
-
-      if (editingAnnotationId) {
-        const updateData: UpdateAnnotationDto = {
-          x: normalizedRect.x,
-          y: normalizedRect.y,
-          width: normalizedRect.width,
-          height: normalizedRect.height,
-          color: currentRect.color,
-        };
-
-        setIsSaving(true);
-        setIsActivelyDrawing(false);
-        setCurrentRect(null);
-
-        updateAnnotation.mutate(
-          { id: editingAnnotationId, data: updateData },
-          {
-            onSettled: () => {
-              setIsSaving(false);
-              setEditingAnnotationId(null);
-              if (onClose) onClose();
-            },
-          }
-        );
-      } else {
-        const annotationData: CreateAnnotationDto = {
-          imageId: image.id,
-          type: "rectangle",
-          x: normalizedRect.x,
-          y: normalizedRect.y,
-          width: normalizedRect.width,
-          height: normalizedRect.height,
-          color: currentRect.color,
-        };
-
-        setIsSaving(true);
-        setIsActivelyDrawing(false);
-        setCurrentRect(null);
-
-        createAnnotation.mutate(annotationData, {
-          onSettled: () => {
-            setIsSaving(false);
-            if (isModal && onClose) onClose();
-          },
-        });
-      }
+      setPendingRect(currentRect);
+      setIsActivelyDrawing(false);
+      setCurrentRect(null);
+      setIsDrawingMode(false);
     } else {
       setIsActivelyDrawing(false);
       setCurrentRect(null);
     }
+  };
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const handleMouseDown = (e: any) => handlePointerDown(e);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const handleMouseMove = (e: any) => handlePointerMove(e);
+  const handleMouseUp = () => handlePointerUp();
+
+  const handleSave = () => {
+    if (!pendingRect || isSaving) return;
+
+    const normalizedRect = {
+      x:
+        Math.min(pendingRect.x, pendingRect.x + pendingRect.width) / imageScale,
+      y:
+        Math.min(pendingRect.y, pendingRect.y + pendingRect.height) /
+        imageScale,
+      width: Math.abs(pendingRect.width) / imageScale,
+      height: Math.abs(pendingRect.height) / imageScale,
+    };
+
+    if (editingAnnotationId) {
+      const updateData: UpdateAnnotationDto = {
+        x: normalizedRect.x,
+        y: normalizedRect.y,
+        width: normalizedRect.width,
+        height: normalizedRect.height,
+        color: pendingRect.color,
+      };
+
+      setIsSaving(true);
+
+      updateAnnotation.mutate(
+        { id: editingAnnotationId, data: updateData },
+        {
+          onSettled: () => {
+            setIsSaving(false);
+            setPendingRect(null);
+            setEditingAnnotationId(null);
+            if (onClose) onClose();
+          },
+        }
+      );
+    } else {
+      const annotationData: CreateAnnotationDto = {
+        imageId: image.id,
+        type: "rectangle",
+        x: normalizedRect.x,
+        y: normalizedRect.y,
+        width: normalizedRect.width,
+        height: normalizedRect.height,
+        color: pendingRect.color,
+      };
+
+      setIsSaving(true);
+
+      createAnnotation.mutate(annotationData, {
+        onSettled: () => {
+          setIsSaving(false);
+          setPendingRect(null);
+          if (isModal && onClose) onClose();
+        },
+      });
+    }
+  };
+
+  const handleCancel = () => {
+    setPendingRect(null);
+    setCurrentRect(null);
+    setIsActivelyDrawing(false);
+    setIsDrawingMode(false);
   };
 
   const handleEditAnnotation = (annotation: Annotation) => {
@@ -279,17 +306,23 @@ export const useAddEditAnnotation = (
     setIsDrawingMode,
     isActivelyDrawing,
     currentRect,
+    pendingRect,
     isSaving,
+    isImageLoading,
     editingAnnotationId,
     stageSize,
     ContainerRef,
     annotations,
-    isLoading: false, // No loading state since we're not fetching
     konvaImage,
     handleMouseDown,
     handleMouseMove,
     handleMouseUp,
+    handlePointerDown,
+    handlePointerMove,
+    handlePointerUp,
     handleEditAnnotation,
+    handleSave,
+    handleCancel,
     renderAnnotation,
   };
 };

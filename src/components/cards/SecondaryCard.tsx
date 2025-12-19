@@ -13,6 +13,7 @@ interface SecondaryCardProps {
   onClickEdit?: () => void;
   onClickDelete?: () => void;
   isAbleAction?: boolean;
+  isHasDetails?: boolean;
 }
 
 export default function SecondaryCard({
@@ -21,6 +22,7 @@ export default function SecondaryCard({
   onClickEdit,
   onClickDelete,
   isAbleAction = false,
+  isHasDetails = true,
 }: SecondaryCardProps) {
   const [hovered, setHovered] = useState(false);
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
@@ -29,7 +31,7 @@ export default function SecondaryCard({
     <material.Card
       sx={{
         height: "100%",
-        cursor: "pointer",
+        cursor: isHasDetails ? "pointer" : "default",
         transition: "all 0.3s ease",
         position: "relative",
         "&:hover": {
@@ -39,7 +41,7 @@ export default function SecondaryCard({
       }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      onClick={onClick}
+      onClick={isHasDetails ? onClick : undefined}
     >
       <material.CardMedia
         component="img"
